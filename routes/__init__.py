@@ -1,4 +1,5 @@
-from flask import render_template
+from flask import render_template, current_app
+
 
 def register_routes(app):
     from .wiki import wiki_bp
@@ -12,4 +13,5 @@ def register_routes(app):
     
     @app.route('/')
     def index():
-        return render_template('index.html')
+        settings = current_app.config['SETTINGS']
+        return render_template('index.html', logo = settings.name)

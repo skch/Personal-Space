@@ -2,7 +2,7 @@ import os
 import sys
 from flask import Flask
 from common.rails_context import RailsContext
-from services.config_tools import read_config, ConfigTools
+from services.config_tools import  ConfigTools
 
 
 def create_app():

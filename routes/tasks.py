@@ -14,7 +14,7 @@ def tasks_list():
 	grouped_tasks=grouped_tasks = service.get_grouped_tasks(context)
 	if context.hasError():
 		return render_template('error.html', data=context)
-	return render_template('tasks.html', grouped_tasks=grouped_tasks)
+	return render_template('tasks.html', logo=settings.name, grouped_tasks=grouped_tasks)
 
 @tasks_bp.route('/<task_id>')
 def task_detail(task_id):
@@ -25,7 +25,7 @@ def task_detail(task_id):
 	task = service.get_task_by_id(context, task_id)
 	if context.hasError():
 		return render_template('error.html', data=context)
-	return render_template('task_detail.html', task=task)
+	return render_template('task_detail.html', logo=settings.name, task=task)
 
 @tasks_bp.route('/<task_id>/edit', methods=['GET', 'POST'])
 def task_edit(task_id):
@@ -39,7 +39,7 @@ def task_edit(task_id):
 		if not context.hasError():
 			return redirect(url_for('tasks.tasks_list', task_id=task_id))
 	if not context.hasError():
-		return render_template('task_edit.html', task=task)
+		return render_template('task_edit.html', logo=settings.name, task=task)
 	return render_template('error.html', data=context)
 
 @tasks_bp.route('/<task_id>/close')
