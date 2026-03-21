@@ -2,19 +2,18 @@ import os
 import sys
 from flask import Flask
 from common.rails_context import RailsContext
-from services.config_tools import read_config
+from services.config_tools import read_config, ConfigTools
 
 
 def create_app():
 	app = Flask(__name__)
-
 	context = RailsContext()
-	config_path = os.path.join(app.root_path, 'config.json')
-	config_data = read_config(context, config_path)
+	settings = ConfigTools()
+	settings.load_config(context, 'config.json')
 	if context.hasError():
 		print(f"Cannot start server: {context.error}")
 		sys.exit(1)
-	app.config.update(config_data)
+	app.config['SETTINGS'] = settings
 
 	from routes import register_routes
 	register_routes(app)

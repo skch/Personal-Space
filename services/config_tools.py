@@ -2,29 +2,29 @@ import json
 import os
 from datetime import datetime
 import pytz
-from common.rails_context import RailsContext
+from common.rails_context import RailsContext, railway
 
+class ConfigTools:
+	def __init__(self):
+			self.name = "PA System"
 
-def copy_config_item(context, src, target, name, app_name):
-	if context.hasError(): return False
-	if not name in src:
-		return context.setError({}, f"Missing {name} folder in config file")
-	target[app_name] = src[name]
-	return True
+	#==============================================
+	@railway
+	def load_config(self, context: RailsContext, config_path):
+		if not os.path.exists(config_path):
+			return context.setError({}, f"Missing config file {config_path}")
 
-
-def read_config(context: RailsContext, config_path):
-	if not os.path.exists(config_path):
-		return context.setError({}, f"Missing config file")
-
-	data = {}
-	with open(config_path, 'r') as f:
-		config_data = json.load(f)
-		copy_config_item(context, config_data, data, 'wiki', 'WIKI_FOLDER')
-		copy_config_item(context, config_data, data, 'calendar', 'CALENDAR_FOLDER')
-		copy_config_item(context, config_data, data, 'contacts', 'CONTACTS_FOLDER')
-		return data
-
+		data = {}
+		with open(config_path, 'r') as f:
+			config_data = json.load(f)
+			if 'logo' in config_data: self.name = config_data['logo']
+			if not 'wiki' in config_data: return context.setError({}, f"Wiki path is missing")
+			if not 'calendar' in config_data: return context.setError({}, f"Calendar path is missing")
+			if not 'contacts' in config_data: return context.setError({}, f"Contacts path is missing")
+			self.wiki_path = config_data['wiki']
+			self.calendar_path = config_data['calendar']
+			self.contacts_path = config_data['contacts']
+			return True
 
 def get_time_zone():
 	timezone_name = 'America/New_York'

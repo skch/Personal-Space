@@ -8,9 +8,9 @@ tasks_bp = Blueprint('tasks', __name__)
 @tasks_bp.route('/')
 def tasks_list():
 	context = RailsContext()
+	settings = current_app.config['SETTINGS']
 	service = DataService()
-	calendar_folder = current_app.config.get('CALENDAR_FOLDER', './data/calendar')
-	service.load_calendar(context, calendar_folder)
+	service.load_calendar(context, settings.calendar_path)
 	grouped_tasks=grouped_tasks = service.get_grouped_tasks(context)
 	if context.hasError():
 		return render_template('error.html', data=context)
@@ -19,9 +19,9 @@ def tasks_list():
 @tasks_bp.route('/<task_id>')
 def task_detail(task_id):
 	context = RailsContext()
+	settings = current_app.config['SETTINGS']
 	service = DataService()
-	calendar_folder = current_app.config.get('CALENDAR_FOLDER', './data/calendar')
-	service.load_calendar(context, calendar_folder)
+	service.load_calendar(context, settings.calendar_path)
 	task = service.get_task_by_id(context, task_id)
 	if context.hasError():
 		return render_template('error.html', data=context)
@@ -30,9 +30,9 @@ def task_detail(task_id):
 @tasks_bp.route('/<task_id>/edit', methods=['GET', 'POST'])
 def task_edit(task_id):
 	context = RailsContext()
+	settings = current_app.config['SETTINGS']
 	service = DataService()
-	calendar_folder = current_app.config.get('CALENDAR_FOLDER', './data/calendar')
-	service.load_calendar(context, calendar_folder)
+	service.load_calendar(context, settings.calendar_path)
 	task = service.get_task_by_id(context, task_id)
 	if request.method == 'POST':
 		service.update_task(context, request.form)
@@ -45,9 +45,9 @@ def task_edit(task_id):
 @tasks_bp.route('/<task_id>/close')
 def task_close(task_id):
 	context = RailsContext()
+	settings = current_app.config['SETTINGS']
 	service = DataService()
-	calendar_folder = current_app.config.get('CALENDAR_FOLDER', './data/calendar')
-	service.load_calendar(context, calendar_folder)
+	service.load_calendar(context, settings.calendar_path)
 	task = service.close_task(context, task_id)
 	if not context.hasError(): return redirect(url_for('tasks.tasks_list'))
 	return render_template('error.html', data=context)

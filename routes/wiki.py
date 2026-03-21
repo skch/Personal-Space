@@ -7,18 +7,18 @@ wiki_bp = Blueprint('wiki', __name__)
 @wiki_bp.route('/', defaults={'path': 'Home'})
 @wiki_bp.route('/<path:path>')
 def wiki_page(path):
-	wiki_folder = current_app.config.get('WIKI_FOLDER', './data/wiki')
+	settings = current_app.config['SETTINGS']
 
 	# Secure path traversal
 	safe_path = os.path.normpath(path)
 	if safe_path.startswith('..') or safe_path.startswith('/'):
 		abort(404)
 
-	full_path = os.path.join(wiki_folder, safe_path)
+	full_path = os.path.join(settings.wiki_path, safe_path)
 
 	# If the path explicitly has a non-markdown extension, serve it statically (e.g. images)
 	if os.path.isfile(full_path) and not full_path.endswith('.md'):
-		return send_from_directory(wiki_folder, safe_path)
+		return send_from_directory(settings.wiki_path, safe_path)
 
 	# Try resolving to a markdown file
 	md_path = full_path + '.md' if not full_path.endswith('.md') else full_path
