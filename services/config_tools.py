@@ -6,7 +6,9 @@ from common.rails_context import RailsContext, railway
 
 class ConfigTools:
 	def __init__(self):
-			self.name = "PA System"
+		self.name = "PA System"
+		self.version = "1.0.34"
+
 
 	#==============================================
 	@railway
@@ -25,6 +27,8 @@ class ConfigTools:
 			self.calendar_path = config_data['calendar']
 			self.contacts_path = config_data['contacts']
 			return True
+
+
 
 def get_time_zone():
 	timezone_name = 'America/New_York'

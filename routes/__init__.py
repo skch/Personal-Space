@@ -14,4 +14,4 @@ def register_routes(app):
     @app.route('/')
     def index():
         settings = current_app.config['SETTINGS']
-        return render_template('index.html', logo = settings.name)
+        return render_template('index.html', version=settings.version, logo = settings.name)
