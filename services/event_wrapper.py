@@ -71,7 +71,7 @@ class EventWrapper(FileWrapper):
 			minutes_left = int(total_seconds_left // 60)
 			return f"in {minutes_left} min"
 		else:
-			return ''
+			return self.organizer
 
 	#----------------------------------
 	def _get_duration(self):
