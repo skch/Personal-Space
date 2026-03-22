@@ -11,6 +11,7 @@ class FileWrapper:
 	# ------------------------------------
 	def _get_icons(self):
 		txt = ''
+		if not self.tags: return txt
 		if 'important' in self.tags: txt += '❗'
 		if 'question' in self.tags: txt += '❓'
 		if 'person' in self.tags: txt += '👨️'
@@ -19,6 +20,7 @@ class FileWrapper:
 
 	# ------------------------------------
 	def _set_tags_checkboxes(self):
+		if not self.tags: return
 		if 'important' in self.tags: self.tag_imp = 'checked="yes"'
 		if 'question' in self.tags: self.tag_quest = 'checked="yes"'
 		if 'person' in self.tags: self.tag_person = 'checked="yes"'

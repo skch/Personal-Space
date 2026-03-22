@@ -7,7 +7,7 @@ from common.rails_context import RailsContext, railway
 class ConfigTools:
 	def __init__(self):
 		self.name = "PA System"
-		self.version = "1.0.35"
+		self.version = "1.0.36"
 
 
 	#==============================================

@@ -11,7 +11,7 @@ def tasks_list():
 	settings = current_app.config['SETTINGS']
 	service = DataService()
 	service.load_calendar(context, settings.calendar_path)
-	grouped_tasks=grouped_tasks = service.get_grouped_tasks(context)
+	grouped_tasks= service.get_grouped_tasks(context)
 	if context.hasError():
 		return render_template('error.html', data=context)
 	return render_template('tasks.html', logo=settings.name, grouped_tasks=grouped_tasks)

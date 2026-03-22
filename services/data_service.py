@@ -144,7 +144,7 @@ class DataService:
 	def update_event(self, context, fdata):
 		event = EventWrapper(fdata, fdata.get('content'), '', '', fdata.get('fullname'))
 		event.prepare_for_display()
-		self._form_to_tags(fdata, event)
+		self._form_to_tags(fdata, event, 'calendar')
 		oldname = fdata.get('path')
 		if oldname: os.remove(oldname)
 		self.save_event(context, event)
@@ -190,7 +190,12 @@ class DataService:
 		grouped_tasks = defaultdict(list)
 		for tid, t in self.tasks.items():
 			grouped_tasks[t.priority].append(t)
-		return grouped_tasks
+		res = {}
+		if 'Today' in grouped_tasks: res['Today'] = grouped_tasks['Today']
+		if 'Week' in grouped_tasks: res['Week'] = grouped_tasks['Week']
+		if 'Month' in grouped_tasks: res['Month'] = grouped_tasks['Month']
+		if 'Year' in grouped_tasks: res['Year'] = grouped_tasks['Year']
+		return res
 
 	#==============================================
 	@railway
@@ -261,7 +266,7 @@ class DataService:
 	def update_task(self, context, fdata):
 		task = TaskWrapper(fdata, fdata.get('content'), '', '', fdata.get('fullname'))
 		task.prepare_for_display()
-		self._form_to_tags(fdata, task)
+		self._form_to_tags(fdata, task, 'todo')
 		self.save_task(context, task)
 		return task
 
@@ -280,8 +285,8 @@ class DataService:
 		os.makedirs(path, exist_ok=True)
 		return path
 
-	def _form_to_tags(self, fdata, item):
-		if not item.tags: item.tags = []
+	def _form_to_tags(self, fdata, item, typetag):
+		if not item.tags: item.tags = [typetag]
 		if self.check_on(fdata, 'icon_quest'): item.tags.append('question')
 		if self.check_on(fdata, 'icon_person'): item.tags.append('person')
 		if self.check_on(fdata, 'icon_call'): item.tags.append('call')
