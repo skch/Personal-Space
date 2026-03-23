@@ -117,7 +117,7 @@ class DataService:
 	#------------------------------------
 	@railway
 	def delete_event(self, context: RailsContext, event):
-		if event.fullname: os.remove(event.fullname)
+		if event.path: os.remove(event.path)
 
 	#------------------------------------
 	@railway
