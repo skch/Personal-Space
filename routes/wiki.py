@@ -13,7 +13,13 @@ def wiki_page(path):
 	context = RailsContext()
 	settings = current_app.config['SETTINGS']
 	service = WikiPage()
-	mdpath = service.get_page_path(context, settings.wiki_path, os.path.normpath(path))
+	safe_path = os.path.normpath(path)
+	mdpath, isMD = service.get_page_path(context, settings.wiki_path, safe_path)
+
+	if not isMD:
+		if os.path.isfile(mdpath) and not mdpath.endswith('.md'):
+			return send_from_directory(settings.wiki_path, safe_path)
+
 	service.load_page(context, mdpath)
 	if context.hasError():
 		return render_template('error.html', data=context.error)

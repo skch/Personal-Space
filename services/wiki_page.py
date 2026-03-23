@@ -10,12 +10,13 @@ class WikiPage:
 		self.root_path = wiki_path
 		# Secure path traversal
 		if safe_path.startswith('..') or safe_path.startswith('/'):
-			return context.setError(False, f"Unsupported path: {safe_path}")
+			context.setError(False, f"Unsupported path: {safe_path}")
+			return "", False
 
 		full_path = os.path.join(wiki_path, safe_path)
 		# If the path explicitly has a non-markdown extension, serve it statically (e.g. images)
-		if os.path.isfile(full_path) and not full_path.endswith('.md'): return False
-		return full_path
+		if os.path.isfile(full_path) and not full_path.endswith('.md'): return full_path, False
+		return full_path, True
 
 	# ==============================================
 	@railway
