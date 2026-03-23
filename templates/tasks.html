@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>Task Manager</h2>
+    </div>
+</div>
+
+{% for category, items in grouped_tasks.items() %}
+<div class="row mb-4">
+	<div class="col-12">
+
+		<div class="card mb-3">
+			<h3 class="card-header">{{ category }}</h3>
+
+			<div class="card-body">
+
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col">Task</th>
+							<th scope="col">Status</th>
+							<th scope="col">Time</th>
+							<th scope="col">Next</th>
+							<th scope="col" class="text-end">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						{% for task in items %}
+						<tr class="table-{{task.bg_color}}">
+							<td><a href="/tasks/{{ task.id }}"><span class="badge rounded-pill bg-light">👓</span></a>
+								{{ task.title }}{{ task.icons }}</td>
+							<td>{{ task.status }}
+								{% if task.remains !='' %}
+								{% if task.remains < 0 %}
+								<span class="badge bg-danger">{{ -task.remains }}
+								{% else %}
+								<span class="badge bg-dark">{{ task.remains }}
+								{% endif %}
+							  {% endif %}
+								</span></td>
+							<td>({{ task.age }})</td>
+							<td>{{ task.next }}</td>
+							<td class="text-end">
+							<a href="/tasks/{{ task.id }}/edit"><span class="badge rounded-pill bg-light">✍️</span></a>
+							{% if task.status != 'Done' %}
+							  <a href="/tasks/{{ task.id }}/close">
+								<span class="badge rounded-pill bg-success">CLOSE</span></a>
+							{% endif %}
+							</td>
+
+
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+			</div>
+
+			<div class="card-body">
+				<a href="/tasks/new/edit" class="card-link">Add</a>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+{% endfor %}
+{% if not grouped_tasks %}
+<div class="alert alert-info">No tasks found in the local folder.</div>
+{% endif %}
+{% endblock %}

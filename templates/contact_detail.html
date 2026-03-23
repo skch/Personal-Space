@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/contacts">Contacts</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ contact.get('FullName') }}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4 border-0">
+    <div class="row g-0 align-items-center">
+        <div class="col-md-4 text-center p-4">
+            {% if contact.image %}
+            <img src="/contacts/{{ contact.id }}/image/{{ contact.image }}" class="img-fluid rounded shadow-sm" alt="{{ contact.get('Full Name') }}" style="max-width: 250px; height: 250px; object-fit: cover;">
+            {% else %}
+            <div class="img-fluid rounded bg-light text-muted d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 250px; height: 250px;">
+                <span>No Image</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h2 class="card-title fw-bold text-primary">{{ contact.get('FullName') }}</h2>
+                <h5 class="text-secondary mb-4">{{ contact.get('title') }}</h5>
+                
+                <div class="row mb-2">
+                    <div class="col-sm-3 text-muted fw-bold">Location</div>
+                    <div class="col-sm-9">{{ contact.get('location', 'N/A') }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-3 text-muted fw-bold">Team</div>
+                    <div class="col-sm-9"><span class="badge bg-primary rounded-pill">{{ contact.get('team', 'N/A') }}</span></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-3 text-muted fw-bold">Comments</div>
+                    <div class="col-sm-9">{{ contact.get('Comments', 'N/A') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm markdown-body border-0">
+    <div class="card-header bg-white fw-bold">
+        Notes
+    </div>
+    <div class="card-body">
+        {{ contact.html | safe }}
+    </div>
+</div>
+{% endblock %}

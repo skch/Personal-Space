@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <!-- Sidebar area for regular github wiki structure -->
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Wiki Navigation</h5>
+                <p class="card-text text-muted">Content stored locally.</p>
+                <a href="/wiki/Home" class="btn btn-sm btn-outline-primary w-100">Home</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/wiki">Wiki</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ path }}</li>
+            </ol>
+        </nav>
+        <div class="card shadow-sm markdown-body">
+            <div class="card-body">
+                {{ content | safe }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

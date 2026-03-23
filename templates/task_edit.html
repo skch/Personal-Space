@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/tasks">Tasks</a></li>
+        <li class="breadcrumb-item"><a href="/tasks/{{ task.id }}">{{ task.id }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm border-0">
+	<div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+		<h4 class="text-primary fw-bold">Edit Task</h4>
+	</div>
+	<div class="card-body">
+		<form method="POST">
+			<input type="hidden" name="fullname" value="{{ task.path }}">
+			<div class="mb-3">
+				<label for="title" class="form-label fw-bold">Title</label>
+				<input type="text" class="form-control" id="title" name="title" value="{{ task.title }}" required>
+			</div>
+			<div class="row">
+				<div class="col-md-4 mb-3">
+						<label for="status" class="form-label fw-bold">Priority</label>
+						<select class="form-select" id="priority" name="priority">
+								<option value="Today" {% if task.priority == 'Today' %}selected{% endif %}>Today</option>
+								<option value="Week" {% if task.priority == 'Week' %}selected{% endif %}>Week</option>
+								<option value="Month" {% if task.priority == 'Month' %}selected{% endif %}>Month</option>
+								<option value="Year" {% if task.priority == 'Year' %}selected{% endif %}>Year</option>
+						</select>
+				</div>
+				<div class="col-md-4 mb-3">
+						<label for="created" class="form-label fw-bold">Created</label>
+						<input type="date" class="form-control" id="created" name="created" value="{{ task.created }}">
+				</div>
+				<div class="col-md-4 mb-3">
+						<label for="due_date" class="form-label fw-bold">Due Date</label>
+						<input type="date" class="form-control" id="due_date" name="due" value="{{ task.due }}">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 mb-3">
+						<label for="status" class="form-label fw-bold">Status</label>
+						<select class="form-select" id="status" name="status">
+								<option value="Open" {% if task.status == 'Open' %}selected{% endif %}>Open</option>
+								<option value="Urgent" {% if task.status == 'Urgent' %}selected{% endif %}>Urgent</option>
+								<option value="Overdue" {% if task.status == 'Overdue' %}selected{% endif %}>Overdue</option>
+								<option value="Active" {% if task.status == 'Active' %}selected{% endif %}>In Progress</option>
+								<option value="Ready" {% if task.status == 'Ready' %}selected{% endif %}>Ready</option>
+								<option value="Pending" {% if task.status == 'Pending' %}selected{% endif %}>Pending external event</option>
+								<option value="Optional" {% if task.status == 'Optional' %}selected{% endif %}>Maybe not needed</option>
+						</select>
+				</div>
+				<div class="col-md-4 mb-3">
+					<label for="project" class="form-label fw-bold">Project</label>
+					<input type="text" class="form-control" id="project" name="project" value="{{ task.project }}">
+				</div>
+				<div class="col-md-4 mb-3">
+						<label for="task_id" class="form-label fw-bold">Task ID</label>
+						<input type="text" class="form-control" id="task_id" name="JIRA" value="{{ task.JIRA }}">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 mb-3">
+						<label for="next" class="form-label fw-bold">Next</label>
+						<input type="text" class="form-control" id="next" name="next" value="{{ task.next }}">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 mb-3">
+					<div class="form-check form-check-inline">
+						<input name="icon_imp" {{ task.tag_imp }} class="form-check-input" type="checkbox" id="ch1">
+						<label class="form-check-label" for="ch1">❗️</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input name="icon_quest" {{ task.tag_quest }} class="form-check-input" type="checkbox" id="ch1">
+						<label class="form-check-label" for="ch1">❓️</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input name="icon_person" {{ task.tag_person }} class="form-check-input" type="checkbox" id="ch2">
+						<label class="form-check-label" for="ch2">👨‍</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input name="icon_call" {{ task.tag_call }} class="form-check-input" type="checkbox" id="ch2">
+						<label class="form-check-label" for="ch2">📞</label>
+					</div>
+				</div>
+			</div>
+			<div class="mb-3">
+					<label for="content" class="form-label fw-bold">Description (Markdown)</label>
+					<textarea class="form-control font-monospace bg-light" id="content" name="content" rows="12">{{ task.content }}</textarea>
+			</div>
+			<div class="mt-4">
+					<button type="submit" class="btn btn-info px-4 rounded-pill shadow-sm me-2">Save Task</button>
+					<a href="/tasks/{{ task.id }}/close" class="btn btn-outline-success px-4 rounded-pill">Close</a>
+					<a href="/tasks/{{ task.id }}" class="btn btn-outline-secondary px-4 rounded-pill">Cancel</a>
+			</div>
+		</form>
+
+	</div>
+
+</div>
+	<pre>{{ task.path }}</pre>
+{% endblock %}

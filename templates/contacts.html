@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>Contacts</h2>
+    </div>
+</div>
+
+{% for category, items in grouped_contacts.items() %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h4 class="text-primary">{{ category }}</h4>
+        <hr>
+    </div>
+    {% for contact in items %}
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm h-100 border-0" onclick="window.location.href='/contacts/{{ contact.id }}'" style="cursor: pointer; transition: transform 0.2s;">
+            {% if contact.image %}
+            <img src="/contacts/{{ contact.id }}/image/{{ contact.image }}" class="card-img-top" alt="{{ contact.get('Full Name') }}" style="height: 250px; object-fit: cover;">
+            {% else %}
+            <div class="card-img-top bg-light text-muted d-flex align-items-center justify-content-center" style="height: 250px;">
+                <span>No Image</span>
+            </div>
+            {% endif %}
+            <div class="card-body text-center">
+                <h5 class="card-title fw-bold">{{ contact.get('Full Name', contact.get('FirstName', '') ~ ' ' ~ contact.get('LastName', '')) }}</h5>
+                <p class="card-text text-secondary mb-0">{{ contact.get('Position', '') }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+{% if not grouped_contacts %}
+<div class="alert alert-info">No contacts found in the local folder.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Auto-refresh every 60 seconds -->
+<meta http-equiv="refresh" content="60">
+
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <h2>Calendar – The Next 3 Days</h2>
+    </div>
+</div>
+<div class="row">
+	{% for day in days_events %}
+	<div class="col-md-4">
+		<div class="card mb-3">
+			<h4 class="card-header bg-{{day.color}} text-white">{{ day.title }}</h4>
+
+				<div class="timeline p-4 block mb-4">
+				{% if day.events %}
+					{% for event in day.events %}
+
+					<div class="tl-item {{ event.status }}">
+							<div class="tl-dot b-primary"></div>
+							<div class="tl-content">
+									<div class=""><a href="/calendar/{{ event.id }}/edit"><strong>{{ event.start }}</strong></a> - {{ event.title }}
+										{% if event.duration %} ({{ event.duration }}) {% endif %}
+									{{ event.icons }}</div>
+									<div class="tl-date text-muted mt-1">{{ event.until }}</div>
+							</div>
+					</div>
+
+					{% endfor %}
+				{% else %}
+						<li class="list-group-item text-muted">No events</li>
+				{% endif %}
+				</div>
+
+
+
+			<div class="card-footer text-muted">
+				<a href="/calendar/new/edit" class="card-link">ADD</a>
+			</div>
+		</div>
+
+
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

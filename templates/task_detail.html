@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/tasks">Tasks</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ task.id }}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4 border-0">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h3 class="mb-0 text-primary fw-bold">{{ task.title }}</h3>
+        <a href="/tasks/{{ task.id }}/edit" class="btn btn-outline-primary btn-sm rounded-pill px-3">Edit Task</a>
+    </div>
+    <div class="card-body row lead fs-6">
+        <div class="col-md-4 mb-2"><strong>Status:</strong> <span class="badge 
+            {% if task.status == 'Done' %}bg-success
+            {% elif task.status == 'In Progress' %}bg-warning text-dark
+            {% else %}bg-primary{% endif %}">{{ task.status }}</span></div>
+        <div class="col-md-4 mb-2"><strong>Due Date:</strong> <span class="text-muted">{{ task.due }}</span></div>
+        <div class="col-md-4 mb-2"><strong>Priority:</strong> <span class="text-secondary">{{ task.priority }}</span></div>
+    </div>
+</div>
+
+<div class="card shadow-sm markdown-body border-0">
+    <div class="card-body">
+        {{ task.html | safe }}
+    </div>
+</div>
+
+{% endblock %}
