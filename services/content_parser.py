@@ -8,6 +8,7 @@ MD_EXTENSIONS = [
     'markdown.extensions.attr_list',
     'markdown.extensions.sane_lists',
     'markdown.extensions.nl2br',
+    'pymdownx.tasklist',
     'pymdownx.mark'
 ]
 

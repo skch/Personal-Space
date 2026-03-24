@@ -85,6 +85,6 @@ class TaskWrapper(FileWrapper):
 	# ------------------------------------
 	def _get_atticon(self):
 		if not self.JIRA: return ''
-		return '⬈'
+		return '⬩'
 
 

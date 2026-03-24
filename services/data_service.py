@@ -76,13 +76,27 @@ class DataService:
 	#------------------------------------
 	@railway
 	def get_event_by_id(self, context: RailsContext, eid):
-		if eid == 'new': return EventWrapper({}, '', '', '', '')
+		if eid == 'new':
+			data = self._create_new_event()
+			event = EventWrapper(data, '', '', '', '')
+			event.prepare_for_display()
+			return event
 		fid = eid[:9]
 		if not fid in self.days: return context.setError({}, f"Day not found: {fid}")
 		day = self.days[fid]
 		for event in day['events']:
 			if event.id == eid: return event
 		return context.setError({}, f"Event not found: {eid}")
+
+	#------------------------------------
+	def _create_new_event(self):
+		date = datetime.now(timezone.utc)
+		return {
+			"date": date.date(),
+			"time": "09:00",
+			"duration": 60,
+			"tags": ["calendar"]
+		}
 
 	#------------------------------------
 	@railway
@@ -201,10 +215,18 @@ class DataService:
 	@railway
 	def get_task_by_id(self, context, task_id):
 		if task_id == 'new':
-			task = TaskWrapper({}, '', '', '', '')
+			data = self._create_new_task()
+			task = TaskWrapper(data, '', '', '', '')
 			task.prepare_for_display()
 			return task
 		return self.tasks.get(task_id)
+
+	#------------------------------------
+	def _create_new_task(self):
+		date = datetime.today()
+		return {
+			"created": date.date(),
+		}
 
 	#------------------------------------
 	def _get_day_color(self, cdate):

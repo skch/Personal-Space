@@ -42,7 +42,6 @@ class EventWrapper(FileWrapper):
 		self.start = self.time.strftime("%H:%M")
 		self.start_time = self.time.timestamp()
 		#self.start_time = self.start_time - 60 * 60  # DST???
-		if not isinstance(self.duration, int): mins = 60
 		self.end_time = self.start_time + self.duration * 60
 		self.status = self._get_status()
 		self.until = self._get_time_left()
