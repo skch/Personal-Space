@@ -1,5 +1,7 @@
 from flask import render_template, current_app
 
+from services.page_tools import get_header
+
 
 def register_routes(app):
     from .wiki import wiki_bp
@@ -14,4 +16,5 @@ def register_routes(app):
     @app.route('/')
     def index():
         settings = current_app.config['SETTINGS']
-        return render_template('index.html', version=settings.version, logo = settings.name)
+        head = get_header(settings, 'About')
+        return render_template('index.html', header = head, version=settings.version, logo = settings.name)

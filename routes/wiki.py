@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, current_app, abort, send_from_dire
 
 from common.rails_context import RailsContext
 from services.content_parser import parse_markdown_file
+from services.page_tools import get_header
 from services.wiki_page import WikiPage
 
 wiki_bp = Blueprint('wiki', __name__)
@@ -12,6 +13,7 @@ wiki_bp = Blueprint('wiki', __name__)
 def wiki_page(path):
 	context = RailsContext()
 	settings = current_app.config['SETTINGS']
+	head = get_header(settings, 'Wiki')
 	service = WikiPage()
 	safe_path = os.path.normpath(path)
 	mdpath, isMD = service.get_page_path(context, settings.wiki_path, safe_path)
@@ -23,7 +25,7 @@ def wiki_page(path):
 
 	service.load_page(context, mdpath)
 	if context.hasError():
-		return render_template('error.html', data=context.error)
+		return render_template('error.html', header = head, data=context.error)
 	return render_template('wiki.html',
-												 logo=settings.name, content=service.html, metadata=service.metadata, path=path)
+												 header = head, content=service.html, metadata=service.metadata, path=path)
 
