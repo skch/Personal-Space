@@ -19,6 +19,9 @@
             {% else %}bg-primary{% endif %}">{{ task.status }}</span></div>
         <div class="col-md-4 mb-2"><strong>Due Date:</strong> <span class="text-muted">{{ task.due }}</span></div>
         <div class="col-md-4 mb-2"><strong>Priority:</strong> <span class="text-secondary">{{ task.priority }}</span></div>
+        <div class="col-md-4 mb-2"><strong>Project:</strong> <span class="text-secondary">{{ task.project }}</span></div>
+        <div class="col-md-4 mb-2"><strong>Next:</strong> <span class="text-secondary">{{ task.next }}</span></div>
+        <div class="col-md-4 mb-2"><strong>External:</strong> <span class="text-secondary">{{ task.external_text }}</span></div>
     </div>
 </div>
 

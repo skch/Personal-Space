@@ -31,7 +31,7 @@ class TaskWrapper(FileWrapper):
 		self.project = self.get('project', '')
 		self.category = self.get('category', '')
 		self.next = self.get('next', '')
-		self.JIRA = self.get('JIRA', '')
+		self._get_external()
 		self.tags = self.data.get('tags', [])
 
 		self._set_tags_checkboxes()
@@ -84,7 +84,21 @@ class TaskWrapper(FileWrapper):
 
 	# ------------------------------------
 	def _get_atticon(self):
-		if not self.JIRA: return ''
+		if not self.external: return ''
 		return '⬩'
+
+	def _get_external(self):
+		value = self.data.get('external', '')
+		if not value:
+			self.external = []
+			self.external_text = ''
+			return
+		if isinstance(value, list):
+			clist = [x for x in value if x is not None]
+			self.external = clist
+			self.external_text = '; '.join(clist)
+		else:
+			self.external_text = value
+			self.external = self.external_text.split(';')
 
 

@@ -233,6 +233,7 @@ class DataService:
 			task = TaskWrapper(data, '', '', '', '')
 			task.prepare_for_display()
 			return task
+		if not task_id in self.tasks: return context.setError({}, f"Task not found: {task_id}")
 		return self.tasks.get(task_id)
 
 	#------------------------------------
@@ -283,7 +284,7 @@ class DataService:
 			md.add("next", task.next)
 			md.add("project", task.project)
 			md.add("status", task.status)
-			md.add("JIRA", task.JIRA)
+			md.add("external", task.external)
 			md.set_tags(task.tags)
 			md.body = task.content
 			oldfilename = task.path
@@ -295,7 +296,6 @@ class DataService:
 			filename = os.path.join(filepath, f'{prefix} - {fname}.md')
 			md.save(filename)
 		except Exception as e:
-			print(e)
 			return context.setException([], f"Cannot save task.", e)
 
 	#------------------------------------

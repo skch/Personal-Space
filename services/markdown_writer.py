@@ -24,7 +24,12 @@ class MarkdownWriter:
 	def save(self, filename):
 		text = '---\n'
 		for key, value in self.meta.items():
-			text += f'{key}: {value}\n'
+			if isinstance(value, list):
+				text += f'{key}:\n'
+				for item in value:
+					text += f'  - {item}\n'
+			else:
+				text += f'{key}: {value}\n'
 		if self.tags:
 			text += 'tags:\n'
 			for tag in self.tags:
