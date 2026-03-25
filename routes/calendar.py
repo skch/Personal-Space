@@ -18,20 +18,40 @@ def calendar_page():
 
 
 
-@calendar_bp.route('/<event_id>/edit', methods=['GET', 'POST'])
+@calendar_bp.route('/<event_id>/edit', methods=['GET'])
 def event_edit(event_id):
 	context = RailsContext()
 	settings = current_app.config['SETTINGS']
 	service = DataService()
 	service.load_calendar(context, settings.calendar_path)
 	event = service.get_event_by_id(context, event_id)
-	if request.method == 'POST':
-		service.update_event(context, request.form)
-		if not context.hasError():
-			return redirect(url_for('calendar.calendar_page'))
 	if not context.hasError():
 		return render_template('event_edit.html', logo = settings.name, event=event)
 	return render_template('error.html', data=context)
+
+@calendar_bp.route('/<day_id>/add', methods=['GET'])
+def event_add(day_id):
+	context = RailsContext()
+	settings = current_app.config['SETTINGS']
+	service = DataService()
+	service.load_calendar(context, settings.calendar_path)
+	event = service.add_new_event(context, day_id)
+	if not context.hasError():
+		return render_template('event_edit.html', logo = settings.name, event=event)
+	return render_template('error.html', data=context)
+
+
+@calendar_bp.route('/save/event', methods=[ 'POST'])
+def event_save():
+	context = RailsContext()
+	settings = current_app.config['SETTINGS']
+	service = DataService()
+	service.load_calendar(context, settings.calendar_path)
+	service.update_event(context, request.form)
+	if not context.hasError():
+		return redirect(url_for('calendar.calendar_page'))
+	return render_template('error.html', data=context)
+
 
 
 @calendar_bp.route('/<event_id>/move')

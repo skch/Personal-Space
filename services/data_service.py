@@ -68,6 +68,7 @@ class DataService:
 				day = self.days[name]
 				day['title'] = cdate.strftime("%b %d | %a")
 				day['color'] = self._get_day_color(cdate)
+				day['id'] = cnt
 				res.append(day)
 				cnt += 1
 			cdate = cdate + timedelta(days=1)
@@ -89,10 +90,23 @@ class DataService:
 		return context.setError({}, f"Event not found: {eid}")
 
 	#------------------------------------
-	def _create_new_event(self):
+	@railway
+	def add_new_event(self, context: RailsContext, dayshift):
+		data = self._create_new_event(dayshift)
+		event = EventWrapper(data, '', '', '', '')
+		event.prepare_for_display()
+		return event
+
+	#------------------------------------
+	def _create_new_event(self, tshift):
 		date = datetime.now(timezone.utc)
+		dayshift = int(tshift)-1
+		if (dayshift > 0):
+			dt = date.date() + timedelta(days=dayshift)
+		else:
+			dt = date.date()
 		return {
-			"date": date.date(),
+			"date": dt,
 			"time": "09:00",
 			"duration": 60,
 			"tags": ["calendar"]

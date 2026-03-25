@@ -18,6 +18,7 @@ def wiki_page(path):
 
 	if not isMD:
 		if os.path.isfile(mdpath) and not mdpath.endswith('.md'):
+			safe_path = safe_path.replace('\\', '/')
 			return send_from_directory(settings.wiki_path, safe_path)
 
 	service.load_page(context, mdpath)

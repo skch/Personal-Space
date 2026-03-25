@@ -13,7 +13,7 @@
 		<h4 class="text-primary fw-bold">Edit Event</h4>
 	</div>
 	<div class="card-body">
-		<form method="POST">
+		<form method="POST" action="/calendar/save/event">
 			<input type="hidden" name="path" value="{{ event.path }}">
 			<div class="mb-3">
 				<label for="title" class="form-label fw-bold">Title</label>

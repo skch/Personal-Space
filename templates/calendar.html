@@ -19,7 +19,7 @@
 					{% for event in day.events %}
 
 					<div class="tl-item {{ event.status }}">
-							<div class="tl-dot b-primary"></div>
+							<div class="tl-dot b-{{ event.color }}"></div>
 							<div class="tl-content">
 									<div class=""><a href="/calendar/{{ event.id }}/edit"><strong>{{ event.start }}</strong></a> - {{ event.title }}
 										{% if event.duration %} ({{ event.duration }}) {% endif %}
@@ -37,7 +37,7 @@
 
 
 			<div class="card-footer text-muted">
-				<a href="/calendar/new/edit" class="card-link">ADD</a>
+				<a href="/calendar/{{ day.id }}/add" class="card-link">ADD</a>
 			</div>
 		</div>
 

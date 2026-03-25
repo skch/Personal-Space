@@ -46,6 +46,7 @@ class EventWrapper(FileWrapper):
 		self.status = self._get_status()
 		self.until = self._get_time_left()
 		self.icons = self._get_repeats() + self._get_icons()
+		self.color = self._get_color()
 
 	#----------------------------------
 	def _get_status(self):
@@ -53,6 +54,13 @@ class EventWrapper(FileWrapper):
 		nowtc = now.timestamp()
 		if nowtc > self.start_time and nowtc < self.end_time: return 'active'
 		return ''
+
+	#----------------------------------
+	def _get_color(self):
+		match self.size:
+			case 'Small': return 'danger'
+			case 'Large': return 'primary'
+		return 'warning'
 
 	#----------------------------------
 	def _get_time_left(self):
