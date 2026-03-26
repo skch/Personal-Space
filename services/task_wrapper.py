@@ -94,7 +94,13 @@ class TaskWrapper(FileWrapper):
 			self.external_text = ''
 			return
 		if isinstance(value, list):
-			clist = [x for x in value if x is not None]
+			clist = []
+			for item in value:
+				if not item: continue
+				if not isinstance(item, str):
+					clist.append(str(item))
+				else:
+					clist.append(item)
 			self.external = clist
 			self.external_text = '; '.join(clist)
 		else:
