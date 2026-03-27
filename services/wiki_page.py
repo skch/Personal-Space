@@ -1,11 +1,14 @@
+import json
 import os
 from common.rails_context import railway, RailsContext
 from services.content_parser import parse_markdown_file
 from services.markdown_reader import MarkdownReader
+from services.markdown_writer import MarkdownWriter
 
 
 class WikiPage:
 
+# region Read Page
 	# ==============================================
 	@railway
 	def get_page_path(self, context: RailsContext, wiki_path, safe_path):
@@ -60,3 +63,40 @@ class WikiPage:
 		reader = MarkdownReader()
 		self.mdata = reader.convert(context, self.markdown)
 		return True
+
+# endregion
+
+# region Save Page
+
+	# ==============================================
+	@railway
+	def save_page(self, context: RailsContext, full_path, jbody):
+		body = json.loads(jbody)
+		md_path = self._validate_page_path(context, full_path)
+		blocks = body['blocks']
+		self._save_debug(blocks)
+		self._save_json2md(context, blocks, md_path)
+		return True
+
+	#------------------------------------
+	@railway
+	def _save_json2md(self, context, blocks, md_path):
+		newpath = md_path.replace('.md', '1.md')
+		md = MarkdownWriter()
+		for block in blocks:
+			if block['type'] == 'paragraph':
+				md.par(block['data']['text'])
+
+		md.save(newpath)
+		return True
+
+# endregion
+
+
+	#------------------------------------
+	def _save_debug(self, data):
+		text = json.dumps(data, ensure_ascii=False, indent=2)
+		with open('_update.json', 'w') as f:
+			f.write(text)
+
+

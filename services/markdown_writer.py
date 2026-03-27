@@ -21,6 +21,13 @@ class MarkdownWriter:
 		self.tags.append(value)
 
 	#----------------------------------
+	def par(self, text):
+		self.body += f'{text}\n\n'
+
+
+
+
+	#----------------------------------
 	def save(self, filename):
 		text = '---\n'
 		for key, value in self.meta.items():

@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, current_app, abort, send_from_directory
+from flask import Blueprint, render_template, current_app, abort, send_from_directory, request, redirect, url_for
 from markupsafe import Markup
 
 from common.rails_context import RailsContext
@@ -10,7 +10,7 @@ from services.wiki_page import WikiPage
 wiki_bp = Blueprint('wiki', __name__)
 
 
-@wiki_bp.route('/edit/<path:path>', methods=['GET'])
+@wiki_bp.route('/edit/<path:path>', methods=['GET', 'POST'])
 def wiki_edit(path):
 	context = RailsContext()
 	settings = current_app.config['SETTINGS']
@@ -25,36 +25,16 @@ def wiki_edit(path):
 			safe_path = safe_path.replace('\\', '/')
 			return send_from_directory(settings.wiki_path, safe_path)
 
+	if request.method == 'POST':
+		body = request.form['jsonpage']
+		service.save_page(context, mdpath, body)
+		return redirect(url_for('wiki.wiki_page', path=path))
 	service.load_page(context, mdpath)
 	mdata = Markup(service.mdata)
 	if context.hasError():
 		return render_template('error.html', header = head, data=context.error)
 	return render_template('wiki_edit.html',
 												 header = head, raw_content=mdata, metadata=service.metadata, path=path)
-
-
-
-
-@wiki_bp.route('/save/<path:path>', methods=['POST'])
-def wiki_save(path):
-	wiki_folder = current_app.config['WIKI_FOLDER']
-	safe_path = os.path.normpath(path)
-	if safe_path.startswith('..') or safe_path.startswith('/'):
-		abort(404)
-
-	full_path = os.path.join(wiki_folder, safe_path)
-	md_path = full_path + '.md' if not full_path.endswith('.md') else full_path
-
-	os.makedirs(os.path.dirname(md_path), exist_ok=True)
-
-	data = request.get_json()
-	if not data or 'content' not in data:
-		return jsonify({'error': 'No content provided'}), 400
-
-	with open(md_path, 'w', encoding='utf-8') as f:
-		f.write(data['content'])
-
-	return jsonify({'success': True})
 
 
 

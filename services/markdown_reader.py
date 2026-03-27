@@ -29,9 +29,6 @@ class MarkdownReader:
 
 	#------------------------------------
 	def parse_markdown_to_editorjs(self, markdown_text: str) -> dict:
-		"""
-		Parses a markdown string and returns a dictionary compatible with Editor.js output format.
-		"""
 		blocks = []
 
 		# Split text by blank lines to get basic blocks
@@ -39,10 +36,8 @@ class MarkdownReader:
 
 		for raw_block in raw_blocks:
 			raw_block = raw_block.strip()
-			if not raw_block:
-				continue
+			if not raw_block:	continue
 
-			# Check for headers: # Header
 			header_match = re.match(r'^(#{1,6})\s+(.*)$', raw_block, flags=re.MULTILINE)
 			if header_match:
 				level = len(header_match.group(1))

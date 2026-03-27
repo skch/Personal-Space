@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<style>
+#editorjs {
+	background-color: white;
+	margin-bottom: 25px;
+}
+.codex-editor__redactor {
+    padding-bottom: 25px !important;
+}
+</style>
 <div class="row">
     <div class="col-md-12">
         <h4 class="mb-3">Editing: {{ path }}</h4>
-        <form id="myForm" method="POST" action="/submit-endpoint">
-					<!-- The div where Editor.js will be initialized -->
+        <form id="myForm" method="POST">
+					<input type="hidden" id="hidden_json" name="jsonpage" value="">
 					<div id="editorjs"></div>
 
 					<!-- A hidden input field to hold the serialized JSON data -->
@@ -141,7 +151,7 @@
         const jsonData = JSON.stringify(outputData);
 
         // 3. Put the JSON string into the hidden form field
-        document.getElementById('hiddenContentInput').value = jsonData;
+        document.getElementById('hidden_json').value = jsonData;
 
         // 4. Now that the hidden field is populated, submit the form programmatically
         this.submit();
