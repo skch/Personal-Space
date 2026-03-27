@@ -23,9 +23,10 @@ class MarkdownReader:
 		chars = string.ascii_letters + string.digits
 		return ''.join(random.choice(chars) for _ in range(length))
 
-	def process_inline_links(self, text: str) -> str:
-		flink = re.sub(r'(?<!\!)\[(.*?)\]\((.*?)\)', r'<a href="\2">\1</a>', text)
-		return flink.replace('"', MAGIC_WORD)
+	def process_inline_elements(self, text: str) -> str:
+		text = re.sub(r'(?<!\!)\[(.*?)\]\((.*?)\)', r'<a href="\2">\1</a>', text)
+		text = re.sub(r'`(.*?)`', r'<code class="inline-code">\1</code>', text)
+		return text.replace('"', MAGIC_WORD)
 
 	#------------------------------------
 	def parse_markdown_to_editorjs(self, markdown_text: str) -> dict:
@@ -38,10 +39,11 @@ class MarkdownReader:
 			raw_block = raw_block.strip()
 			if not raw_block:	continue
 
+			# Check for headers: # Header
 			header_match = re.match(r'^(#{1,6})\s+(.*)$', raw_block, flags=re.MULTILINE)
 			if header_match:
 				level = len(header_match.group(1))
-				text = self.process_inline_links(header_match.group(2))
+				text = self.process_inline_elements(header_match.group(2))
 				blocks.append({
 					"id": self.generate_id(),
 					"type": "header",
@@ -90,7 +92,7 @@ class MarkdownReader:
 				items = []
 				for line in lines:
 					content = re.sub(r'^[\*\-\+]\s+|^\d+\.\s+', '', line.strip())
-					content = self.process_inline_links(content)
+					content = self.process_inline_elements(content)
 					items.append({
 						"content": content,
 						"meta": {},
@@ -117,7 +119,7 @@ class MarkdownReader:
 					if re.match(r'^\|?[\s\-:]+\|?(\s*\|[\s\-:]+)*\|?$', line):
 						with_headings = True
 						continue
-					row = [self.process_inline_links(cell.strip()) for cell in line.strip().strip('|').split('|')]
+					row = [self.process_inline_elements(cell.strip()) for cell in line.strip().strip('|').split('|')]
 					content.append(row)
 
 				blocks.append({
@@ -133,7 +135,7 @@ class MarkdownReader:
 
 			# Default to paragraph
 			# We can keep inline HTML like <mark> or <a href="..."> intact as Editor.js handles them.
-			text = self.process_inline_links(raw_block.replace('\n', ' '))
+			text = self.process_inline_elements(raw_block.replace('\n', ' '))
 			blocks.append({
 				"id": self.generate_id(),
 				"type": "paragraph",
@@ -147,6 +149,7 @@ class MarkdownReader:
 			"blocks": blocks,
 			"version": "2.31.5"
 		}
+
 
 	def save_data_debug(self, data):
 		text = json.dumps(data, ensure_ascii=False, indent=2)
