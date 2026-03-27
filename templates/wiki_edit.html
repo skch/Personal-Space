@@ -37,6 +37,7 @@
     const List = window.List || window.EditorjsList;
     const jsonString = '{{raw_content}}';
 		const xblocks = JSON.parse(jsonString);
+		console.log(xblocks);
 
     /**
      * To initialize the Editor, create a new instance with configuration object
@@ -45,22 +46,10 @@
     var editor = new EditorJS({
       readOnly: false,
       holder: 'editorjs',
-
-      /**
-       * Common Inline Toolbar settings
-       * - if true (or not specified), the order from 'tool' property will be used
-       * - if an array of tool names, this order will be used
-       */
       // inlineToolbar: ['link', 'marker', 'bold', 'italic'],
       // inlineToolbar: true,
 
-      /**
-       * Tools list
-       */
       tools: {
-        /**
-         * Each Tool is a Plugin. Pass them via 'class' option with necessary settings {@link docs/tools.md}
-         */
         header: {
           class: Header,
           inlineToolbar: ['marker', 'link'],
