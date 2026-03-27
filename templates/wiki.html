@@ -12,12 +12,17 @@
         </div>
     </div>
     <div class="col-md-9">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/wiki">Wiki</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ path }}</li>
-            </ol>
-        </nav>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/wiki">Wiki</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ path }}</li>
+                </ol>
+            </nav>
+            <a href="/wiki/edit/{{ path }}" class="btn btn-sm btn-outline-primary">
+                Edit
+            </a>
+        </div>
         <div class="card shadow-sm markdown-body">
             <div class="card-body">
                 {{ content | safe }}

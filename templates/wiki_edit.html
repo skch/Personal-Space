@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h4 class="mb-3">Editing: {{ path }}</h4>
+        <form id="myForm" method="POST" action="/submit-endpoint">
+					<!-- The div where Editor.js will be initialized -->
+					<div id="editorjs"></div>
+
+					<!-- A hidden input field to hold the serialized JSON data -->
+					<input type="hidden" name="content" id="hiddenContentInput">
+
+					<button type="submit">Save Content</button>
+				</form>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static',filename='js/editor/header.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/simple-image.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/delimiter.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/list.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/checklist.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/quote.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/code.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/embed.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/table.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/link.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/warning.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/marker.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/inline-code.js') }}"></script>
+<script src="{{ url_for('static',filename='js/editor/editorjs.js') }}"></script>
+
+
+<!-- Initialization -->
+  <script>
+    const List = window.List || window.EditorjsList;
+    const jsonString = '{{raw_content}}';
+		const xblocks = JSON.parse(jsonString);
+
+    /**
+     * To initialize the Editor, create a new instance with configuration object
+     * @see docs/installation.md for mode details
+     */
+    var editor = new EditorJS({
+      readOnly: false,
+      holder: 'editorjs',
+
+      /**
+       * Common Inline Toolbar settings
+       * - if true (or not specified), the order from 'tool' property will be used
+       * - if an array of tool names, this order will be used
+       */
+      // inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+      // inlineToolbar: true,
+
+      /**
+       * Tools list
+       */
+      tools: {
+        /**
+         * Each Tool is a Plugin. Pass them via 'class' option with necessary settings {@link docs/tools.md}
+         */
+        header: {
+          class: Header,
+          inlineToolbar: ['marker', 'link'],
+          config: {
+            placeholder: 'Header'
+          },
+          shortcut: 'CMD+SHIFT+H'
+        },
+
+        /**
+         * Or pass class directly without any configuration
+         */
+        image: SimpleImage,
+
+        list: {
+          class: List,
+          inlineToolbar: true,
+          shortcut: 'CMD+SHIFT+L'
+        },
+
+        checklist: {
+          class: Checklist,
+          inlineToolbar: true,
+        },
+
+        quote: {
+          class: Quote,
+          inlineToolbar: true,
+          config: {
+            quotePlaceholder: 'Enter a quote',
+            captionPlaceholder: 'Quote\'s author',
+          },
+          shortcut: 'CMD+SHIFT+O'
+        },
+
+        warning: Warning,
+
+        marker: {
+          class:  Marker,
+          shortcut: 'CMD+SHIFT+M'
+        },
+
+        code: {
+          class:  CodeTool,
+          shortcut: 'CMD+SHIFT+C'
+        },
+
+        delimiter: Delimiter,
+
+        inlineCode: {
+          class: InlineCode,
+          shortcut: 'CMD+SHIFT+C'
+        },
+
+        linkTool: LinkTool,
+
+        embed: Embed,
+
+        table: {
+          class: Table,
+          inlineToolbar: true,
+          shortcut: 'CMD+ALT+T'
+        },
+
+      },
+
+      // defaultBlock: 'paragraph',
+
+      data: {
+        blocks: xblocks
+      },
+      onReady: function(){
+        //saveButton.click();
+      },
+      onChange: function(api, event) {
+        console.log('something changed', event);
+      }
+    });
+
+    const form = document.getElementById('myForm');
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault(); // Stop the form from submitting immediately
+
+      try {
+        // 1. Save the editor content asynchronously
+        const outputData = await editor.save();
+
+        // 2. Serialize the data to a JSON string
+        const jsonData = JSON.stringify(outputData);
+
+        // 3. Put the JSON string into the hidden form field
+        document.getElementById('hiddenContentInput').value = jsonData;
+
+        // 4. Now that the hidden field is populated, submit the form programmatically
+        this.submit();
+
+      } catch (error) {
+        console.error('Saving failed: ', error);
+        // Optionally, show an error message to the user
+      }
+    });
+
+  </script>
+
+{% endblock %}

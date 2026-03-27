@@ -1,6 +1,8 @@
 import os
 from common.rails_context import railway, RailsContext
 from services.content_parser import parse_markdown_file
+from services.markdown_reader import MarkdownReader
+
 
 class WikiPage:
 
@@ -22,7 +24,8 @@ class WikiPage:
 	@railway
 	def load_page(self, context: RailsContext, full_path):
 		md_path = self._validate_page_path(context, full_path)
-		return self._parse_page(context, md_path)
+		self._parse_page(context, md_path)
+		return self._convert_page(context, md_path)
 
 	#------------------------------------
 	@railway
@@ -48,4 +51,12 @@ class WikiPage:
 			return context.setError(False, f"Cannot parse page: {md_path}")
 		self.html = parsed['html']
 		self.metadata = parsed['metadata']
+		self.markdown = parsed['raw_content']
+		return True
+
+	#------------------------------------
+	@railway
+	def _convert_page(self, context, md_path):
+		reader = MarkdownReader()
+		self.mdata = reader.convert(context, self.markdown)
 		return True
