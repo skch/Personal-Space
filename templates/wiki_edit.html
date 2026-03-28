@@ -1,166 +1,69 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <style>
-#editorjs {
+.mdeditor {
 	background-color: white;
 	margin-bottom: 25px;
+	height: 500px;
 }
-.codex-editor__redactor {
-    padding-bottom: 25px !important;
-}
+
 </style>
-<div class="row">
-    <div class="col-md-12">
-        <h4 class="mb-3">Editing: {{ path }}</h4>
-        <form id="myForm" method="POST">
-					<input type="hidden" id="hidden_json" name="jsonpage" value="">
-					<div id="editorjs"></div>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/tasks">Tasks</a></li>
+        <li class="breadcrumb-item"><a href="/wiki/{{ path }}">{{ path }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+</nav>
 
-					<!-- A hidden input field to hold the serialized JSON data -->
-					<input type="hidden" name="content" id="hiddenContentInput">
+<div class="card shadow-sm border-0">
+	<div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+		<h4 class="text-primary fw-bold">Edit Page</h4>
+	</div>
+	<div class="card-body">
+		<form id="mdform" method="POST">
+			<input type="hidden" name="page_path" value="{{ path }}">
+			<input type="hidden" id="page_text" name="page_text" value="">
 
-					<button type="submit">Save Content</button>
-				</form>
-    </div>
+			<div class="mb-3">
+					<div class="mdeditor">{{ raw_content }}</div>
+
+			</div>
+			<div class="mt-4">
+					<button type="submit" class="btn btn-info px-4 rounded-pill shadow-sm me-2">Save Page</button>
+					<a href="/wiki/{{ path }}" class="btn btn-outline-secondary px-4 rounded-pill">Cancel</a>
+			</div>
+		</form>
+
+	</div>
+
 </div>
 
 
-<script src="{{ url_for('static',filename='js/editor/header.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/simple-image.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/delimiter.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/list.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/checklist.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/quote.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/code.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/embed.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/table.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/link.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/warning.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/marker.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/inline-code.js') }}"></script>
-<script src="{{ url_for('static',filename='js/editor/editorjs.js') }}"></script>
+<script src="{{ url_for('static',filename='/js/overtype.js') }}"></script>
+
 
 
 <!-- Initialization -->
   <script>
-    const List = window.List || window.EditorjsList;
-    const jsonString = '{{raw_content}}';
-		const xblocks = JSON.parse(jsonString);
-		console.log(xblocks);
+	const [editor] = new OverType('.mdeditor', {
+		toolbar: true
+	});
 
-    /**
-     * To initialize the Editor, create a new instance with configuration object
-     * @see docs/installation.md for mode details
-     */
-    var editor = new EditorJS({
-      readOnly: false,
-      holder: 'editorjs',
-      // inlineToolbar: ['link', 'marker', 'bold', 'italic'],
-      // inlineToolbar: true,
+	const form = document.getElementById('mdform');
+	form.addEventListener('submit', async function (event) {
+		event.preventDefault();
 
-      tools: {
-        header: {
-          class: Header,
-          inlineToolbar: ['marker', 'link'],
-          config: {
-            placeholder: 'Header'
-          },
-          shortcut: 'CMD+SHIFT+H'
-        },
+		try {
 
-        /**
-         * Or pass class directly without any configuration
-         */
-        image: SimpleImage,
+			const mdtext = editor.getValue();
+			document.getElementById('page_text').value = mdtext;
+			this.submit();
+		} catch (error) {
+			console.error('Saving failed: ', error);
+		}
+	});
 
-        list: {
-          class: List,
-          inlineToolbar: true,
-          shortcut: 'CMD+SHIFT+L'
-        },
-
-        checklist: {
-          class: Checklist,
-          inlineToolbar: true,
-        },
-
-        quote: {
-          class: Quote,
-          inlineToolbar: true,
-          config: {
-            quotePlaceholder: 'Enter a quote',
-            captionPlaceholder: 'Quote\'s author',
-          },
-          shortcut: 'CMD+SHIFT+O'
-        },
-
-        warning: Warning,
-
-        marker: {
-          class:  Marker,
-          shortcut: 'CMD+SHIFT+M'
-        },
-
-        code: {
-          class:  CodeTool,
-          shortcut: 'CMD+SHIFT+C'
-        },
-
-        delimiter: Delimiter,
-
-        inlineCode: {
-          class: InlineCode,
-          shortcut: 'CMD+SHIFT+C'
-        },
-
-        linkTool: LinkTool,
-
-        embed: Embed,
-
-        table: {
-          class: Table,
-          inlineToolbar: true,
-          shortcut: 'CMD+ALT+T'
-        },
-
-      },
-
-      // defaultBlock: 'paragraph',
-
-      data: {
-        blocks: xblocks
-      },
-      onReady: function(){
-        //saveButton.click();
-      },
-      onChange: function(api, event) {
-        console.log('something changed', event);
-      }
-    });
-
-    const form = document.getElementById('myForm');
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault(); // Stop the form from submitting immediately
-
-      try {
-        // 1. Save the editor content asynchronously
-        const outputData = await editor.save();
-
-        // 2. Serialize the data to a JSON string
-        const jsonData = JSON.stringify(outputData);
-
-        // 3. Put the JSON string into the hidden form field
-        document.getElementById('hidden_json').value = jsonData;
-
-        // 4. Now that the hidden field is populated, submit the form programmatically
-        this.submit();
-
-      } catch (error) {
-        console.error('Saving failed: ', error);
-        // Optionally, show an error message to the user
-      }
-    });
 
   </script>
 

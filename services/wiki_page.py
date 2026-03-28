@@ -70,7 +70,26 @@ class WikiPage:
 
 	# ==============================================
 	@railway
-	def save_page(self, context: RailsContext, full_path, jbody):
+	def save_page(self, context: RailsContext, full_path, mbody):
+
+		md_path = self._validate_page_path(context, full_path)
+		self._save_md(context, mbody, md_path)
+		return True
+
+	#------------------------------------
+	@railway
+	def _save_md(self, context, mdtext, md_path):
+		try:
+			with open(md_path, 'w') as file: file.write(mdtext)
+			return True
+		except OSError as e:
+			print(f"Error saving file {md_path}: {e}")
+			return False
+
+
+	# ==============================================
+	@railway
+	def save_block_page(self, context: RailsContext, full_path, jbody):
 		body = json.loads(jbody)
 		md_path = self._validate_page_path(context, full_path)
 		blocks = body['blocks']
