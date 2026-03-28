@@ -33,7 +33,7 @@ def wiki_edit(path):
 	mdata = Markup(service.mdata)
 	if context.hasError():
 		return render_template('error.html', header = head, data=context.error)
-	return render_template('wiki_edit.html',
+	return render_template('wiki_block_edit.html',
 												 header = head, raw_content=mdata, metadata=service.metadata, path=path)
 
 

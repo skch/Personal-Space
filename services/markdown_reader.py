@@ -133,6 +133,22 @@ class MarkdownReader:
 				})
 				continue
 
+			# Check for quote
+			if len(lines) > 0 and all(line.strip().startswith('>') for line in lines):
+				quote_lines = [re.sub(r'^>\s?', '', line.strip()) for line in lines]
+				text = self.process_inline_elements('<br>'.join(quote_lines))
+				blocks.append({
+					"id": self.generate_id(),
+					"type": "quote",
+					"data": {
+						"text": text,
+						"caption": "",
+						"alignment": "left"
+					}
+				})
+				continue
+
+
 			# Default to paragraph
 			# We can keep inline HTML like <mark> or <a href="..."> intact as Editor.js handles them.
 			text = self.process_inline_elements(raw_block.replace('\n', ' '))

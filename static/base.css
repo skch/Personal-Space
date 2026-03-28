@@ -1,0 +1,23 @@
+blockquote {
+  width: 80%; /* Adjust width as needed */
+  margin-left: 15px;
+  font-style: italic;
+  color: #555;
+  padding: 15px 15px;
+  border-left: 5px solid #78C0A8; /* Elegant color accent */
+  line-height: 1.6;
+  background-color: #f9f9f9; /* Subtle background color */
+  border-radius: 4px;
+}
+
+blockquote p {
+  margin: 0 0 10px 0; /* Adjust spacing for the paragraph */
+}
+
+blockquote cite {
+  display: block; /* Ensures the citation is on a new line */
+  text-align: right;
+  color: #777;
+  font-size: 0.9em;
+  font-style: normal; /* Override default italics for citation */
+}

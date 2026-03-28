@@ -157,13 +157,13 @@ class DataService:
 		event.path = os.path.join(event_path, event.time.strftime("%H%M")+f' - {fname}.md')
 
 		md = MarkdownWriter()
-		md.add("title", title)
-		md.add("date", make_date_text(event.date))
-		md.add("time", make_datetime_text(event.date, event.time))
-		md.add("duration", event.duration)
-		md.add("size", event.size)
-		md.add("organizer", event.organizer)
-		md.add("repeats", event.repeats)
+		md.setValue("title", title)
+		md.setValue("date", make_date_text(event.date))
+		md.setValue("time", make_datetime_text(event.date, event.time))
+		md.setValue("duration", event.duration)
+		md.setValue("size", event.size)
+		md.setValue("organizer", event.organizer)
+		md.setValue("repeats", event.repeats)
 		md.set_tags(event.tags)
 		md.body = event.content
 		md.save(event.path)
@@ -277,14 +277,14 @@ class DataService:
 	def save_task(self, context, task):
 		md = MarkdownWriter()
 		try:
-			md.add("title", task.title)
-			md.add("created", make_date_text(task.created))
-			md.add("priority", task.priority)
-			md.add("due", make_date_text(task.due))
-			md.add("next", task.next)
-			md.add("project", task.project)
-			md.add("status", task.status)
-			md.add("external", task.external)
+			md.setValue("title", task.title)
+			md.setValue("created", make_date_text(task.created))
+			md.setValue("priority", task.priority)
+			md.setValue("due", make_date_text(task.due))
+			md.setValue("next", task.next)
+			md.setValue("project", task.project)
+			md.setValue("status", task.status)
+			md.setValue("external", task.external)
 			md.set_tags(task.tags)
 			md.body = task.content
 			oldfilename = task.path
