@@ -19,8 +19,10 @@
                     <li class="breadcrumb-item active" aria-current="page">{{ path }}</li>
                 </ol>
             </nav>
-            <a href="/wiki/edit/{{ path }}" class="btn btn-sm btn-outline-primary">Edit</a>
-            <a href="/wiki/blocks/{{ path }}" class="btn btn-sm btn-outline-primary">Blocks</a>
+					<div class="hstack gap-3 align-items-right">
+            <a href="/wiki/edit/{{ path }}" class="btn btn-sm btn-outline-primary">Edit Page</a>
+            <a href="/wiki/blocks/{{ path }}" class="btn btn-sm btn-outline-warning">Edit Blocks</a>
+					</div>
         </div>
         <div class="card shadow-sm markdown-body">
             <div class="card-body">

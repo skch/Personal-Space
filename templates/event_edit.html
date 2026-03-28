@@ -13,8 +13,9 @@
 		<h4 class="text-primary fw-bold">Edit Event</h4>
 	</div>
 	<div class="card-body">
-		<form method="POST" action="/calendar/save/event">
+		<form id="mdform" method="POST" action="/calendar/save/event">
 			<input type="hidden" name="path" value="{{ event.path }}">
+		<input type="hidden" id="mdcontent" name="content" value="">
 			<div class="mb-3">
 				<label for="title" class="form-label fw-bold">Title</label>
 				<input type="text" class="form-control" id="title" name="title" value="{{ event.title }}" required>
@@ -74,8 +75,8 @@
 				</div>
 			</div>
 			<div class="mb-3">
-					<label for="content" class="form-label fw-bold">Description (Markdown)</label>
-					<textarea class="form-control font-monospace bg-light" id="content" name="content" rows="12">{{ event.content }}</textarea>
+				<label for="content" class="form-label fw-bold">Description (Markdown)</label>
+				<div class="mdeditor">{{ event.content }}</div>
 			</div>
 			<div class="mt-4">
 					<button type="submit" class="btn btn-success px-4 rounded-pill shadow-sm me-2">Save Event</button>
@@ -86,5 +87,27 @@
 		</form>
 	</div>
 </div>
-	<pre>{{ event.path }}</pre>
+<pre>{{ event.path }}</pre>
+
+<script src="{{ url_for('static',filename='/js/overtype.js') }}"></script>
+<script>
+const [editor] = new OverType('.mdeditor', {
+	toolbar: true
+});
+
+const form = document.getElementById('mdform');
+form.addEventListener('submit', async function (event) {
+	event.preventDefault();
+
+	try {
+
+		const mdtext = editor.getValue();
+		document.getElementById('mdcontent').value = mdtext;
+		this.submit();
+	} catch (error) {
+		console.error('Saving failed: ', error);
+	}
+});
+</script>
+
 {% endblock %}

@@ -21,3 +21,9 @@ blockquote cite {
   font-size: 0.9em;
   font-style: normal; /* Override default italics for citation */
 }
+
+.mdeditor {
+	background-color: white;
+	margin-bottom: 25px;
+	height: 500px;
+}

@@ -165,7 +165,7 @@ class DataService:
 		md.setValue("organizer", event.organizer)
 		md.setValue("repeats", event.repeats)
 		md.set_tags(event.tags)
-		md.body = event.content
+		md.mdtext = event.content
 		md.save(event.path)
 
 	#------------------------------------
@@ -286,7 +286,7 @@ class DataService:
 			md.setValue("status", task.status)
 			md.setValue("external", task.external)
 			md.set_tags(task.tags)
-			md.body = task.content
+			md.mdtext = task.content
 			oldfilename = task.path
 			if oldfilename:	os.remove(oldfilename)
 			fname = self.clean_text(task.title)
