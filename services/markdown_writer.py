@@ -174,7 +174,7 @@ class MarkdownWriter:
 				text += f"---\n{self.mdtext}"
 			else:
 				text = self.mdtext
-			with open(fname, 'w') as file: file.write(text)
+			with open(fname, 'w', encoding="utf-8") as file: file.write(text)
 			return True
 		except OSError as e:
 			print(f"Error saving file {fname}: {e}")

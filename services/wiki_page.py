@@ -80,7 +80,7 @@ class WikiPage:
 	@railway
 	def _save_md(self, context, mdtext, md_path):
 		try:
-			with open(md_path, 'w') as file: file.write(mdtext)
+			with open(md_path, 'w', encoding="utf-8") as file: file.write(mdtext)
 			return True
 		except OSError as e:
 			print(f"Error saving file {md_path}: {e}")
