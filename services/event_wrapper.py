@@ -39,11 +39,7 @@ class EventWrapper(FileWrapper):
 		self.size = self.get('size', 'Small')
 
 		self._set_tags_checkboxes()
-
-		if isinstance(self.date, str):
-			self.date_text = self.date
-		else:
-			self.date_text = self.date.strftime("%Y-%m-%d")
+		self.date_text = self._get_date_text(self.date)
 		self.start = self.time.strftime("%H:%M")
 		self.start_time = self.time.timestamp()
 		#self.start_time = self.start_time - 60 * 60  # DST???

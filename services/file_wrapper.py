@@ -35,3 +35,8 @@ class FileWrapper:
 		if isinstance(value, str): return datetime.strptime(value, "%Y-%m-%d")
 		return value
 
+	#----------------------------------
+	def _get_date_text(self, dt):
+		if isinstance(dt, str): return dt
+		return dt.strftime("%Y-%m-%d")
+
