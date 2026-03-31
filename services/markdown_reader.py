@@ -14,7 +14,7 @@ class MarkdownReader:
 	@railway
 	def convert(self, context: RailsContext, markdown):
 		data = self.parse_markdown_to_editorjs(markdown)
-		self.save_data_debug(data['blocks'])
+		#self.save_data_debug(data['blocks'])
 		text = json.dumps(data['blocks'], ensure_ascii=False)
 		return text.replace(MAGIC_WORD,"\\'")
 

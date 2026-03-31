@@ -29,7 +29,12 @@
 
 						{% for task in items %}
 						<tr class="table-{{task.bg_color}}">
-							<td><a href="/tasks/{{ task.id }}"><span class="badge rounded-pill bg-light">👓</span></a>
+							<td>
+								{% if task.status == 'Done' %}
+								<span class="badge rounded-pill">✅</span>
+								{% else %}
+									<a href="/tasks/{{ task.id }}"><span class="badge rounded-pill bg-light">👓</span></a>
+								{% endif %}
 								{{ task.title }}{{ task.icons }}</td>
 							<td>{{ task.status }}
 								{% if task.remains !='' %}
@@ -37,14 +42,14 @@
 								<span class="badge bg-danger">{{ -task.remains }}
 								{% else %}
 								<span class="badge bg-dark">{{ task.remains }}
-								{% endif %}
+							  {% endif %}
 							  {% endif %}
 								</span></td>
 							<td>({{ task.age }})</td>
 							<td>{{ task.next }}</td>
 							<td class="text-end">
-							<a href="/tasks/{{ task.id }}/edit"><span class="badge rounded-pill bg-light">📝</span></a>
 							{% if task.status != 'Done' %}
+								<a href="/tasks/{{ task.id }}/edit"><span class="badge rounded-pill bg-light">📝</span></a>
 							  <a href="/tasks/{{ task.id }}/close">
 								<span class="badge rounded-pill bg-success">CLOSE</span></a>
 							{% endif %}
