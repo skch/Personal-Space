@@ -55,7 +55,8 @@
 <!-- Initialization -->
   <script>
     const List = window.List || window.EditorjsList;
-    const jsonString = '{{raw_content}}';
+    const BSL = "\\\\"
+    const jsonString = `{{raw_content}}`;
 		const xblocks = JSON.parse(jsonString);
 		console.log(xblocks);
 
@@ -150,26 +151,17 @@
       }
     });
 
-    const form = document.getElementById('myForm');
+    const form = document.getElementById('mdform');
     form.addEventListener('submit', async function (event) {
-      event.preventDefault(); // Stop the form from submitting immediately
+      event.preventDefault();
 
       try {
-        // 1. Save the editor content asynchronously
         const outputData = await editor.save();
-
-        // 2. Serialize the data to a JSON string
         const jsonData = JSON.stringify(outputData);
-
-        // 3. Put the JSON string into the hidden form field
         document.getElementById('hidden_json').value = jsonData;
-
-        // 4. Now that the hidden field is populated, submit the form programmatically
         this.submit();
-
       } catch (error) {
         console.error('Saving failed: ', error);
-        // Optionally, show an error message to the user
       }
     });
 

@@ -26,6 +26,12 @@ class RailsContext:
 		self.details = str(ex)
 		return dv
 
+	def printError(self):
+		if not self.error: return
+		text = f"Error: {self.error}"
+		if self.details: text += f"\nDetails: {self.details}"
+		print(text)
+
 
 
 def railway(fn):

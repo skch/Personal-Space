@@ -90,10 +90,13 @@ class WikiPage:
 	# ==============================================
 	@railway
 	def save_block_page(self, context: RailsContext, full_path, jbody):
+		if not jbody:
+			#return self._save_md(context, '', full_path)
+			return False
 		body = json.loads(jbody)
 		md_path = self._validate_page_path(context, full_path)
 		blocks = body['blocks']
-		self._save_debug(blocks)
+		#self._save_debug(blocks)
 		self._save_json2md(context, blocks, md_path)
 		return True
 

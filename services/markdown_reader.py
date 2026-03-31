@@ -16,7 +16,7 @@ class MarkdownReader:
 		data = self.parse_markdown_to_editorjs(markdown)
 		#self.save_data_debug(data['blocks'])
 		text = json.dumps(data['blocks'], ensure_ascii=False)
-		return text.replace(MAGIC_WORD,"\\'")
+		return text.replace('\\', '${BSL}').replace(MAGIC_WORD,"\\'")
 
 	#------------------------------------
 	def generate_id(self, length=10):
@@ -26,7 +26,7 @@ class MarkdownReader:
 	def process_inline_elements(self, text: str) -> str:
 		text = re.sub(r'(?<!\!)\[(.*?)\]\((.*?)\)', r'<a href="\2">\1</a>', text)
 		text = re.sub(r'`(.*?)`', r'<code class="inline-code">\1</code>', text)
-		return text.replace('"', MAGIC_WORD)
+		return text.replace('\\', '${BSL}').replace('"', MAGIC_WORD)
 
 	#------------------------------------
 	def parse_markdown_to_editorjs(self, markdown_text: str) -> dict:
