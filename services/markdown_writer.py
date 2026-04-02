@@ -18,27 +18,6 @@ class MarkdownWriter:
 		self.tags.append(value)
 
 
-	#----------------------------------
-	def save_old(self, filename):
-		text = '---\n'
-		for key, value in self.meta.items():
-			if isinstance(value, list):
-				text += f'{key}:\n'
-				for item in value:
-					text += f'  - {item}\n'
-			else:
-				text += f'{key}: {value}\n'
-		if self.tags:
-			text += 'tags:\n'
-			for tag in self.tags:
-				text += f'  - {tag}\n'
-		text += '---\n\n'
-		text += self.body
-		with open(filename, 'w', encoding='utf-8') as f:
-			f.write(text)
-
-
-
 	# ==============================================
 	def setValue(self, name, value):
 		self.metadata[name] = value
@@ -171,6 +150,10 @@ class MarkdownWriter:
 				for key, value in self.metadata.items():
 					text += self._append_meta_value(key, value)
 				#text += yaml.dump(self.metadata, sort_keys=False)
+				if self.tags:
+					text += 'tags:\n'
+					for tag in self.tags:
+						text += f'  - {tag}\n'
 				text += f"---\n{self.mdtext}"
 			else:
 				text = self.mdtext

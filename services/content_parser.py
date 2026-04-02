@@ -12,6 +12,9 @@ MD_EXTENSIONS = [
     'pymdownx.mark'
 ]
 
+def reduce_line_spaces(text):
+    return text.replace('\n\n\n', '\n')
+
 def parse_markdown_file(filepath):
     if not os.path.exists(filepath):
         return None
@@ -25,5 +28,5 @@ def parse_markdown_file(filepath):
     return {
         'metadata': post.metadata,
         'html': html_content,
-        'raw_content': post.content
+        'raw_content': reduce_line_spaces(post.content)
     }
