@@ -20,7 +20,8 @@
 						<tr>
 							<th scope="col">Task</th>
 							<th scope="col">Status</th>
-							<th scope="col">Time</th>
+							<th scope="col">Project</th>
+							<th scope="col">Age</th>
 							<th scope="col">Next</th>
 							<th scope="col" class="text-end">Action</th>
 						</tr>
@@ -45,7 +46,8 @@
 							  {% endif %}
 							  {% endif %}
 								</span></td>
-							<td>({{ task.age }})</td>
+							<td>{{ task.project }}</td>
+							<td>{{ task.age }}</td>
 							<td>{{ task.next }}</td>
 							<td class="text-end">
 							{% if task.status != 'Done' %}

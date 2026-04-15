@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-import frontmatter
+from dateutil.relativedelta import relativedelta
 from datetime import date, timedelta, datetime, timezone
 from common.rails_context import railway, RailsContext
 from services.config_tools import make_event_date_time, make_date_text, make_datetime_text
@@ -139,6 +139,27 @@ class DataService:
 			success = True
 		if event.repeats == 'weekly' or event.repeats == '1 week':
 			event.date = event.date + timedelta(weeks=1)
+			success = True
+		if event.repeats == 'weekly' or event.repeats == '1 week':
+			event.date = event.date + timedelta(weeks=1)
+			success = True
+		if event.repeats == '2 weeks':
+			event.date = event.date + timedelta(weeks=2)
+			success = True
+		if event.repeats == '3 weeks':
+			event.date = event.date + timedelta(weeks=3)
+			success = True
+		if event.repeats == '4 weeks':
+			event.date = event.date + timedelta(weeks=4)
+			success = True
+		if event.repeats == 'monthly' or event.repeats == '1 month':
+			event.date = event.date + relativedelta(months=1)
+			success = True
+		if event.repeats == '2 months':
+			event.date = event.date + relativedelta(months=2)
+			success = True
+		if event.repeats == 'yearly' or event.repeats == '1 year':
+			event.date = event.date + relativedelta(years=1)
 			success = True
 		if not success: return context.setError(False, f"Unknown repeats type: {event.repeats}")
 
@@ -327,4 +348,5 @@ class DataService:
 		if self.check_on(fdata, 'icon_person'): item.tags.append('person')
 		if self.check_on(fdata, 'icon_call'): item.tags.append('call')
 		if self.check_on(fdata, 'icon_imp'): item.tags.append('important')
+		if not typetag in item.tags: item.tags.append(typetag)
 
