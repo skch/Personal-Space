@@ -20,14 +20,14 @@ def calendar_page():
 
 
 
-@calendar_bp.route('/<event_id>/edit', methods=['GET'])
-def event_edit(event_id):
+@calendar_bp.route('/<day>/<event_id>/edit', methods=['GET'])
+def event_edit(day, event_id):
 	context = RailsContext()
 	settings = current_app.config['SETTINGS']
 	head = get_header(settings, 'Edit Event')
 	service = DataService()
 	service.load_calendar(context, settings.calendar_path)
-	event = service.get_event_by_id(context, event_id)
+	event = service.get_event_by_id(context, day, event_id)
 	if not context.hasError():
 		return render_template('event_edit.html', header = head, event=event)
 	return render_template('error.html', header = head, data=context)
@@ -59,24 +59,24 @@ def event_save():
 
 
 
-@calendar_bp.route('/<event_id>/move')
-def event_move(event_id):
+@calendar_bp.route('/<day>/<event_id>/move')
+def event_move(day, event_id):
 	context = RailsContext()
 	settings = current_app.config['SETTINGS']
 	head = get_header(settings, 'Calendar')
 	service = DataService()
 	service.load_calendar(context, settings.calendar_path)
-	service.move_event(context, event_id)
+	service.move_event(context, day, event_id)
 	if not context.hasError(): return redirect(url_for('calendar.calendar_page'))
 	return render_template('error.html', header = head, data=context)
 
-@calendar_bp.route('/<event_id>/next')
-def event_next(event_id):
+@calendar_bp.route('/<day>/<event_id>/next')
+def event_next(day, event_id):
 	context = RailsContext()
 	settings = current_app.config['SETTINGS']
 	head = get_header(settings, 'Calendar')
 	service = DataService()
 	service.load_calendar(context, settings.calendar_path)
-	service.create_next_event(context, event_id)
+	service.create_next_event(context, day, event_id)
 	if not context.hasError(): return redirect(url_for('calendar.calendar_page'))
 	return render_template('error.html', header = head, data=context)

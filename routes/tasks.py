@@ -24,7 +24,7 @@ def task_detail(task_id):
 	head = get_header(settings, 'Task')
 	service = DataService()
 	service.load_calendar(context, settings.calendar_path)
-	task = service.get_task_by_id(context, task_id)
+	task = service.get_task_by_id(context, task_id, "")
 	if context.hasError():
 		return render_template('error.html', header = head, data=context)
 	return render_template('task_detail.html', header = head, task=task)
@@ -36,7 +36,8 @@ def task_edit(task_id):
 	head = get_header(settings, 'Edit Task')
 	service = DataService()
 	service.load_calendar(context, settings.calendar_path)
-	task = service.get_task_by_id(context, task_id)
+	priority = request.args.get('priority', default='Day')
+	task = service.get_task_by_id(context, task_id, priority)
 	if request.method == 'POST':
 		service.update_task(context, request.form)
 		if not context.hasError():

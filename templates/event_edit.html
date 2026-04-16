@@ -80,8 +80,8 @@
 			</div>
 			<div class="mt-4">
 					<button type="submit" class="btn btn-success px-4 rounded-pill shadow-sm me-2">Save Event</button>
-					<a href="/calendar/{{ event.id }}/next" class="btn btn-outline-info px-4 rounded-pill">Create Next</a>
-					<a href="/calendar/{{ event.id }}/move" class="btn btn-outline-info px-4 rounded-pill">Move Next</a>
+					<a href="/calendar/{{event.day}}/{{ event.id }}/next" class="btn btn-outline-info px-4 rounded-pill">Create Next</a>
+					<a href="/calendar/{{event.day}}/{{ event.id }}/move" class="btn btn-outline-info px-4 rounded-pill">Move Next</a>
 					<a href="/calendar" class="btn btn-outline-secondary px-4 rounded-pill">Cancel</a>
 			</div>
 		</form>

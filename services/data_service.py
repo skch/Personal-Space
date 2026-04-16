@@ -68,7 +68,7 @@ class DataService:
 				day = self.days[name]
 				day['title'] = cdate.strftime("%b %d | %a")
 				day['color'] = self._get_day_color(cdate)
-				day['id'] = cnt
+				day['id'] = cdate.strftime("%Y-%m-%d")
 				res.append(day)
 				cnt += 1
 			cdate = cdate + timedelta(days=1)
@@ -76,13 +76,12 @@ class DataService:
 
 	#------------------------------------
 	@railway
-	def get_event_by_id(self, context: RailsContext, eid):
+	def get_event_by_id(self, context: RailsContext, fid, eid):
 		if eid == 'new':
 			data = self._create_new_event()
 			event = EventWrapper(data, '', '', '', '')
 			event.prepare_for_display()
 			return event
-		fid = eid[:9]
 		if not fid in self.days: return context.setError({}, f"Day not found: {fid}")
 		day = self.days[fid]
 		for event in day['events']:
@@ -91,20 +90,15 @@ class DataService:
 
 	#------------------------------------
 	@railway
-	def add_new_event(self, context: RailsContext, dayshift):
-		data = self._create_new_event(dayshift)
+	def add_new_event(self, context: RailsContext, dayid):
+		data = self._create_new_event(dayid)
 		event = EventWrapper(data, '', '', '', '')
 		event.prepare_for_display()
 		return event
 
 	#------------------------------------
-	def _create_new_event(self, tshift):
-		date = datetime.now(timezone.utc)
-		dayshift = int(tshift)-1
-		if (dayshift > 0):
-			dt = date.date() + timedelta(days=dayshift)
-		else:
-			dt = date.date()
+	def _create_new_event(self, dayid):
+		dt = datetime.strptime(dayid, "%Y-%m-%d")
 		return {
 			"date": dt,
 			"time": "09:00",
@@ -114,16 +108,16 @@ class DataService:
 
 	#------------------------------------
 	@railway
-	def move_event(self, context: RailsContext, eid):
-		event = self.get_event_by_id(context, eid)
+	def move_event(self, context: RailsContext, day, eid):
+		event = self.get_event_by_id(context, day, eid)
 		self.forward_date(context, event)
 		self.delete_event(context, event)
 		self.save_event(context, event)
 
 	#------------------------------------
 	@railway
-	def create_next_event(self, context: RailsContext, eid):
-		event = self.get_event_by_id(context, eid)
+	def create_next_event(self, context: RailsContext, day, eid):
+		event = self.get_event_by_id(context, day, eid)
 		self.delete_event(context, event)
 		self.save_event(context, event, True)
 		self.forward_date(context, event)
@@ -248,9 +242,9 @@ class DataService:
 
 	#==============================================
 	@railway
-	def get_task_by_id(self, context, task_id):
+	def get_task_by_id(self, context, task_id, priority):
 		if task_id == 'new':
-			data = self._create_new_task()
+			data = self._create_new_task(priority)
 			task = TaskWrapper(data, '', '', '', '')
 			task.prepare_for_display()
 			return task
@@ -258,10 +252,12 @@ class DataService:
 		return self.tasks.get(task_id)
 
 	#------------------------------------
-	def _create_new_task(self):
+	def _create_new_task(self, priority):
 		date = datetime.today()
+		if not priority: priority = 'Day'
 		return {
 			"created": date.date(),
+			"priority": priority
 		}
 
 	#------------------------------------

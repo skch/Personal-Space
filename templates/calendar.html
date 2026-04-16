@@ -21,7 +21,7 @@
 					<div class="tl-item {{ event.status }}">
 							<div class="tl-dot b-{{ event.color }}"></div>
 							<div class="tl-content">
-									<div class=""><a href="/calendar/{{ event.id }}/edit"><strong>{{ event.start }}</strong></a> - {{ event.title }}
+									<div class=""><a href="/calendar/{{event.day}}/{{ event.id }}/edit"><strong>{{ event.start }}</strong></a> - {{ event.title }}
 										{% if event.duration %} ({{ event.duration }}) {% endif %}
 									{{ event.icons }}</div>
 									<div class="tl-date text-muted mt-1">{{ event.until }}</div>

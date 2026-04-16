@@ -1,3 +1,4 @@
+import hashlib
 from datetime import date, timedelta, datetime, timezone
 
 from services.config_tools import make_datetime_text
@@ -16,10 +17,12 @@ class EventWrapper(FileWrapper):
 		self.date = self._get_as_date('date')
 		time = self._get_time()
 		self.time = datetime.combine(self.date, time.time())
-
-		self.id = self.time.strftime("%Y-%m%d-%H%M")
-		self.start = self.time.timestamp()
 		self.title = self.data.get('title', '')
+
+		self.day = self.time.strftime("%Y-%m%d")
+		uniq = self.date.strftime("%Y-%m%d")+self.time.strftime("%H%M")+f' - {self.title}.md'
+		self.id = hashlib.md5(uniq.encode('utf-8')).hexdigest()
+		self.start = self.time.timestamp()
 		self.tags = self.data.get('tags', ['calendar'])
 		self.status = ''
 		self.start = ''
