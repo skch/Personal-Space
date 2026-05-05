@@ -19,7 +19,6 @@ def calendar_page():
 	return render_template('calendar.html', header = head, days_events=eventlist)
 
 
-
 @calendar_bp.route('/<day>/<event_id>/edit', methods=['GET'])
 def event_edit(day, event_id):
 	context = RailsContext()
@@ -30,6 +29,18 @@ def event_edit(day, event_id):
 	event = service.get_event_by_id(context, day, event_id)
 	if not context.hasError():
 		return render_template('event_edit.html', header = head, event=event)
+	return render_template('error.html', header = head, data=context)
+
+@calendar_bp.route('/<day>/<event_id>/delete', methods=['GET'])
+def event_delete(day, event_id):
+	context = RailsContext()
+	settings = current_app.config['SETTINGS']
+	head = get_header(settings, 'Edit Event')
+	service = DataService()
+	service.load_calendar(context, settings.calendar_path)
+	service.delete_event_by_id(context, day, event_id)
+	if not context.hasError():
+		return redirect(url_for('events.events_page'))
 	return render_template('error.html', header = head, data=context)
 
 @calendar_bp.route('/<day_id>/add', methods=['GET'])

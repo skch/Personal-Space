@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>Calendar Events</h2>
+			<a href="/events/clean" class="btn btn-primary">Clean Past</a>
+			<a href="/events/compress" class="btn btn-secondary">Compress Old</a>
+    </div>
+</div>
+
+{% for day in days_events %}
+	{% if day.events %}
+
+<div class="row mb-4">
+	<div class="col-12">
+
+		<div class="card mb-3">
+			<h3 class="card-header">{{ day.title  }}</h3>
+
+			<div class="card-body">
+
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col" style="width: 80px;">Start</th>
+							<th scope="col">Title</th>
+							<th scope="col" style="width: 50px;">Duration</th>
+							<th scope="col" style="width: 100px;">Every</th>
+							<th scope="col" style="width: 100px;"class="text-end">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						{% for event in day.events %}
+						<tr class="table-{{event.bg_color}}">
+							<td>{{ event.start }}</td>
+							<td>{{ event.title }}</td>
+							<td>{{ event.duration }}</td>
+							<td>{{ event.repeats }}</td>
+							<td class="text-end">
+							<a href="/calendar/{{event.day}}/{{ event.id }}/edit"><strong>📝</strong></a>
+							<a href="/calendar/{{event.day}}/{{ event.id }}/delete"><strong>🗑️</strong></a>
+
+							</td>
+
+
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+			</div>
+
+
+
+		</div>
+
+	</div>
+</div>
+	{% endif %}
+{% endfor %}
+
+{% endblock %}

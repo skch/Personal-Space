@@ -1,4 +1,6 @@
 import os
+import shutil
+import zipfile
 from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 from datetime import date, timedelta, datetime, timezone
@@ -76,6 +78,121 @@ class DataService:
 
 	#------------------------------------
 	@railway
+	def get_all_events(self, context: RailsContext):
+		cdate = date.today()
+		daysidx = dict(sorted(self.days.items()))
+		res = []
+		for name, day in daysidx.items():
+			suffix = ''
+			self._sort_events(context, day)
+			ddd = datetime.strptime(name, "%Y-%m%d")
+			if ddd.date() < cdate: suffix = ' (past)'
+			day = self.days[name]
+			day['title'] = ddd.strftime("%b %d, %Y") + suffix
+			day['id'] = cdate.strftime("%Y-%m-%d")
+			res.append(day)
+		return res
+
+	#------------------------------------
+	@railway
+	def clean_days(self, context: RailsContext, path: str):
+		if not os.path.exists(path):
+			return context.setError({}, f"Calendar folder does not exist: {path}")
+
+		self.base_path = path
+		days = os.listdir(path)
+		for dayfolder in days:
+			if not self._is_day_folder(dayfolder): continue
+			fullpath = os.path.join(self.base_path, dayfolder)
+			list = os.listdir(fullpath)
+			if not list:
+				os.rmdir(fullpath)
+				continue
+		return True
+
+	#------------------------------------
+	@railway
+	def compress_month(self, context: RailsContext, path: str):
+		name, folders = self._get_old_folders(context, path)
+		if not name: return False
+		if self._has_open_tasks(context, path, folders): return False
+		self._zip_folders(context, path, name, folders)
+		self._delete_folders(context, path, folders)
+		return True
+
+	#------------------------------------
+	@railway
+	def _get_old_folders(self, context: RailsContext, path):
+		if not os.path.exists(path):
+			return context.setError({}, f"Calendar folder does not exist: {path}")
+		cdate = date.today()
+		this_month = cdate.strftime("%Y-%m")
+		cname = ""
+		res = []
+		try:
+			days = os.listdir(path)
+			days.sort()
+			for dayfolder in days:
+				if not os.path.isdir(os.path.join(path, dayfolder)): continue
+				if not cname:
+					if dayfolder[:7] == this_month: return "", []
+					cname = dayfolder[:7]
+				if dayfolder[:7] != cname: break
+				res.append(dayfolder)
+
+			return cname, res
+		except Exception as e:
+			return context.setError({}, f"Failed get list of folders: {e}")
+
+	#------------------------------------
+	@railway
+	def _zip_folders(self, context: RailsContext, path, name, folder_list):
+		try:
+			filename = os.path.join(path, name+'.zip')
+			with zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+				for folder in folder_list:
+					full_folder = os.path.join(path, folder)
+					if not os.path.isdir(full_folder): continue
+					for root, dirs, files in os.walk(full_folder):
+						for file in files:
+							file_path = os.path.join(root, file)
+							zpath = file_path.replace(path, '')
+							zipf.write(file_path, zpath)
+
+			return True
+		except Exception as e:
+			return context.setError({}, f"Failed to zip folders: {e}")
+
+	#------------------------------------
+	@railway
+	def _has_open_tasks(self, context: RailsContext, path: str, folder_list):
+		try:
+			for folder in folder_list:
+				full_folder = os.path.join(path, folder)
+				if not os.path.isdir(full_folder): continue
+				for root, dirs, files in os.walk(full_folder):
+					for file in files:
+						if file.startswith('TODO'): return True
+			return False
+		except Exception as e:
+			return context.setError({}, f"Failed scan folders: {e}")
+
+	#------------------------------------
+	@railway
+	def _delete_folders(self, context: RailsContext, path: str, folder_list):
+		try:
+			for folder in folder_list:
+				full_folder = os.path.join(path, folder)
+				if not os.path.isdir(full_folder): continue
+				shutil.rmtree(full_folder)
+
+			return True
+		except Exception as e:
+			return context.setError({}, f"Failed to delete folders: {e}")
+
+
+	#------------------------------------
+	@railway
 	def get_event_by_id(self, context: RailsContext, fid, eid):
 		if eid == 'new':
 			data = self._create_new_event()
@@ -86,6 +203,17 @@ class DataService:
 		day = self.days[fid]
 		for event in day['events']:
 			if event.id == eid: return event
+		return context.setError({}, f"Event not found: {eid}")
+
+	#------------------------------------
+	@railway
+	def delete_event_by_id(self, context: RailsContext, fid, eid):
+		if not fid in self.days: return context.setError({}, f"Day not found: {fid}")
+		day = self.days[fid]
+		for event in day['events']:
+			if event.id == eid:
+				return self.delete_event(context, event)
+
 		return context.setError({}, f"Event not found: {eid}")
 
 	#------------------------------------
