@@ -239,8 +239,8 @@ class DataService:
 	def move_event(self, context: RailsContext, day, eid):
 		event = self.get_event_by_id(context, day, eid)
 		self.forward_date(context, event)
-		self.delete_event(context, event)
-		self.save_event(context, event)
+		#self.delete_event(context, event)
+		#self.save_event(context, event)
 
 	#------------------------------------
 	@railway
@@ -260,9 +260,6 @@ class DataService:
 			event.date = event.date + timedelta(days=1)
 			success = True
 		if event.repeats == 'weekly' or event.repeats == '1 week':
-			event.date = event.date + timedelta(days=7)
-			success = True
-		if event.repeats == '1 week' or event.repeats == '1 week':
 			event.date = event.date + timedelta(days=7)
 			success = True
 		if event.repeats == '2 weeks':
