@@ -239,8 +239,8 @@ class DataService:
 	def move_event(self, context: RailsContext, day, eid):
 		event = self.get_event_by_id(context, day, eid)
 		self.forward_date(context, event)
-		#self.delete_event(context, event)
-		#self.save_event(context, event)
+		self.delete_event(context, event)
+		self.save_event(context, event)
 
 	#------------------------------------
 	@railway
