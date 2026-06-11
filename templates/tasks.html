@@ -38,12 +38,12 @@
 								{% endif %}
 								{{ task.title }}{{ task.icons }}</td>
 							<td>{{ task.status }}
-								{% if task.remains !='' %}
-								{% if task.remains < 0 %}
-								<span class="badge bg-danger">{{ -task.remains }}
-								{% else %}
-								<span class="badge bg-dark">{{ task.remains }}
-							  {% endif %}
+								{% if task.status != 'Done' and task.remains !='' %}
+									{% if task.remains < 0 %}
+									<span class="badge bg-danger">{{ -task.remains }}
+									{% else %}
+									<span class="badge bg-dark">{{ task.remains }}
+									{% endif %}
 							  {% endif %}
 								</span></td>
 							<td>{{ task.project }}</td>

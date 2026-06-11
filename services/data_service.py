@@ -262,7 +262,7 @@ class DataService:
 		if event.repeats == 'weekly' or event.repeats == '1 week':
 			event.date = event.date + timedelta(weeks=1)
 			success = True
-		if event.repeats == 'weekly' or event.repeats == '1 week':
+		if event.repeats == '1 week' or event.repeats == '1 week':
 			event.date = event.date + timedelta(weeks=1)
 			success = True
 		if event.repeats == '2 weeks':
