@@ -260,19 +260,19 @@ class DataService:
 			event.date = event.date + timedelta(days=1)
 			success = True
 		if event.repeats == 'weekly' or event.repeats == '1 week':
-			event.date = event.date + timedelta(weeks=1)
+			event.date = event.date + timedelta(days=7)
 			success = True
 		if event.repeats == '1 week' or event.repeats == '1 week':
-			event.date = event.date + timedelta(weeks=1)
+			event.date = event.date + timedelta(days=7)
 			success = True
 		if event.repeats == '2 weeks':
-			event.date = event.date + timedelta(weeks=2)
+			event.date = event.date + timedelta(days=14)
 			success = True
 		if event.repeats == '3 weeks':
-			event.date = event.date + timedelta(weeks=3)
+			event.date = event.date + timedelta(days=21)
 			success = True
 		if event.repeats == '4 weeks':
-			event.date = event.date + timedelta(weeks=4)
+			event.date = event.date + timedelta(days=28)
 			success = True
 		if event.repeats == 'monthly' or event.repeats == '1 month':
 			event.date = event.date + relativedelta(months=1)
