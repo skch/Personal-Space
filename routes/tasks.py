@@ -11,8 +11,9 @@ def tasks_list():
 	settings = current_app.config['SETTINGS']
 	head = get_header(settings, 'Tasks')
 	service = DataService()
+	scope = request.args.get('show')
 	service.load_calendar(context, settings.calendar_path)
-	grouped_tasks= service.get_grouped_tasks(context)
+	grouped_tasks= service.get_grouped_tasks(context, scope !='all')
 	if context.hasError():
 		return render_template('error.html', header = head, data=context)
 	return render_template('tasks.html', header = head, grouped_tasks=grouped_tasks)
@@ -41,7 +42,7 @@ def task_edit(task_id):
 	if request.method == 'POST':
 		service.update_task(context, request.form)
 		if not context.hasError():
-			return redirect(url_for('tasks.tasks_list', task_id=task_id))
+			return redirect(url_for('tasks.tasks_list'))
 	if not context.hasError():
 		return render_template('task_edit.html', header = head, task=task)
 	return render_template('error.html', header = head, data=context)

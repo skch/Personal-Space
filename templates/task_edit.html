@@ -66,6 +66,18 @@
 						<label for="next" class="form-label fw-bold">Next</label>
 						<input type="text" class="form-control" id="next" name="next" value="{{ task.next }}">
 				</div>
+				<div class="col-md-4 mb-3">
+						<label for="to_hide" class="form-label fw-bold">Hide task:</label>
+						<select class="form-select" id="to_hide" name="hidden">
+								<option value="" {% if task.hidden == '' %}selected{% endif %}>Never</option>
+								<option value="3" {% if task.hidden == 3 %}selected{% endif %}>Until 3 days before due</option>
+								<option value="7" {% if task.hidden == 7 %}selected{% endif %}>Until 1 week before due</option>
+								<option value="14" {% if task.hidden == 7 %}selected{% endif %}>Until 2 weeks before due</option>
+								<option value="30" {% if task.hidden == 30 %}selected{% endif %}>Until 1 month before due</option>
+								<option value="90" {% if task.hidden == 90 %}selected{% endif %}>Until 3 months before due</option>
+								<option value="180" {% if task.hidden == 180 %}selected{% endif %}>Until 6 months before due</option>
+						</select>
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-4 mb-3">

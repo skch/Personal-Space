@@ -354,16 +354,22 @@ class DataService:
 
 	#==============================================
 	@railway
-	def get_grouped_tasks(self, context: RailsContext):
+	def get_grouped_tasks(self, context: RailsContext, hidelong=False):
 		grouped_tasks = defaultdict(list)
 		for tid, t in self.tasks.items():
+			if hidelong and t._is_hidden(): continue
 			grouped_tasks[t.priority].append(t)
 		res = {}
-		if 'Today' in grouped_tasks: res['Today'] = grouped_tasks['Today']
-		if 'Week' in grouped_tasks: res['Week'] = grouped_tasks['Week']
-		if 'Month' in grouped_tasks: res['Month'] = grouped_tasks['Month']
-		if 'Year' in grouped_tasks: res['Year'] = grouped_tasks['Year']
+		if 'Today' in grouped_tasks: res['Today'] = self.__fsort(grouped_tasks, 'Today')
+		if 'Week' in grouped_tasks: res['Week'] = self.__fsort(grouped_tasks,'Week')
+		if 'Month' in grouped_tasks: res['Month'] = self.__fsort(grouped_tasks,'Month')
+		if 'Year' in grouped_tasks: res['Year'] = self.__fsort(grouped_tasks,'Year')
 		return res
+
+	#------------------------------------
+	def __fsort(self, groups, name):
+		list = groups[name]
+		return sorted(list, key=lambda task: task._get_sort())
 
 	#==============================================
 	@railway
@@ -427,6 +433,7 @@ class DataService:
 			md.setValue("project", task.project)
 			md.setValue("status", task.status)
 			md.setValue("external", task.external)
+			md.setValue("hidden", task.hidden)
 			md.set_tags(task.tags)
 			md.mdtext = task.content
 			oldfilename = task.path

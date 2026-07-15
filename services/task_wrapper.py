@@ -33,6 +33,8 @@ class TaskWrapper(FileWrapper):
 		self.project = self.get('project', '')
 		self.category = self.get('category', '')
 		self.next = self.get('next', '')
+		self.hidden = self.get('hidden', '')
+		#if self.hidden: print(f" hidden: {self.title}")
 		self._get_external()
 		self.tags = self.data.get('tags', [])
 
@@ -74,15 +76,37 @@ class TaskWrapper(FileWrapper):
 		return diff.days
 
 	# ------------------------------------
+	def _is_hidden(self):
+		if not self.due: return False
+		if not self.hidden: return False
+		#print(f" hidden: {self.title}")
+		hdays = int(self.hidden)
+		cdate = self.due
+		if isinstance(cdate, datetime): cdate = cdate.date()
+		diff = cdate - date.today()
+		return diff.days > hdays
+
+	# ------------------------------------
+	def _get_sort(self):
+		if not self.due: return 0
+		cdate = self.due
+		if isinstance(cdate, datetime): cdate = cdate.date()
+		diff = cdate - date.today()
+		return diff.days
+
+	# ------------------------------------
 	def _get_age(self):
+		suff=""
+		if self._is_hidden(): suff = " (hide)"
+
 		if not self.created: return ''
 		cdate = self.created
 		if isinstance(cdate, datetime): cdate = cdate.date()
 		diff = date.today() - cdate
-		if diff.days > 365: return f"{diff.days // 365} yr"
-		if diff.days > 30: return f"{diff.days // 30} mo"
-		if diff.days > 7: return f"{diff.days // 7} wk"
-		return f'{diff.days} d'
+		if diff.days > 365: return f"{diff.days // 365} yr{suff}"
+		if diff.days > 30: return f"{diff.days // 30} mo{suff}"
+		if diff.days > 7: return f"{diff.days // 7} wk{suff}"
+		return f'{diff.days} d{suff}'
 
 	# ------------------------------------
 	def _get_atticon(self):
