@@ -34,7 +34,7 @@ class DiagramMaker:
 	@railway
 	def _make_jsfile(self, context: RailsContext, tasks, path):
 		tlist = []
-		has_closed = False
+		statuses = []
 		for t in tasks:
 			if t.status != "Done" and t._is_hidden(): continue
 			eid = ",".join(t.external) if t.external else "-"
@@ -56,22 +56,14 @@ class DiagramMaker:
 				"Time left": f"{t.remains}"
 			}
 			tlist.append(item)
-			if t.status == "Done": has_closed = True
+			if not t.status in statuses: statuses.append(t.status)
 
-		if not has_closed:
-			tlist.append({
-				"Title": "completed",
-				"EID": "US",
-				"Size": "0.5",
-				"Project": "",
-				"Status": "Done",
-				"Created": "2026-05-01",
-				"Due date": "-",
-				"Priority": "Week",
-				"Next": "-",
-				"Age": "10",
-				"Time left": "10"
-			})
+		if not 'Done' in statuses: self._add_small(tlist, "completed", "Done")
+		if not 'Overdue' in statuses: self._add_small(tlist, "overdue", "Overdue")
+		if not 'Urgent' in statuses: self._add_small(tlist, "urgent", "Urgent")
+		if not 'Active' in statuses: self._add_small(tlist, "in progress", "Active")
+		if not 'Optional' in statuses: self._add_small(tlist, "optional", "Optional")
+		if not 'Open' in statuses: self._add_small(tlist, "not started", "Open")
 
 		text = "modelDataAvailable("
 		text += json.dumps(tlist, indent=2)
@@ -79,6 +71,22 @@ class DiagramMaker:
 		with open(path, "w") as text_file:
 			text_file.write(text)
 		return True
+
+	#------------------------------------------
+	def _add_small(self, tlist, title, status):
+		tlist.append({
+			"Title": title,
+			"EID": "US",
+			"Size": "0.1",
+			"Project": "",
+			"Status": status,
+			"Created": "2026-05-01",
+			"Due date": "-",
+			"Priority": "Year",
+			"Next": "-",
+			"Age": "10",
+			"Time left": "10"
+		})
 
 	#------------------------------------------
 	def _get_task_size(self, task):
