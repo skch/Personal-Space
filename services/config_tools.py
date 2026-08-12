@@ -7,7 +7,7 @@ from common.rails_context import RailsContext, railway
 class ConfigTools:
 	def __init__(self):
 		self.name = "PA System"
-		self.version = "1.0.71"
+		self.version = "1.0.73"
 
 
 	#==============================================
@@ -26,6 +26,7 @@ class ConfigTools:
 			self.wiki_path = config_data['wiki']
 			self.calendar_path = config_data['calendar']
 			self.contacts_path = config_data['contacts']
+			self.diagram_path = config_data['diagram']
 			return True
 
 

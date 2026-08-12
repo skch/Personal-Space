@@ -354,6 +354,14 @@ class DataService:
 
 	#==============================================
 	@railway
+	def get_all_tasks(self, context: RailsContext):
+		res = []
+		for tid, t in self.tasks.items():
+			res.append(t)
+		return res
+
+	#==============================================
+	@railway
 	def get_grouped_tasks(self, context: RailsContext, hidelong=False):
 		grouped_tasks = defaultdict(list)
 		for tid, t in self.tasks.items():
@@ -433,6 +441,7 @@ class DataService:
 			md.setValue("project", task.project)
 			md.setValue("status", task.status)
 			md.setValue("external", task.external)
+			md.setValue("size", task.size)
 			md.setValue("hidden", task.hidden)
 			md.set_tags(task.tags)
 			md.mdtext = task.content

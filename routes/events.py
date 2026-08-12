@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, current_app, abort, request, redir
 
 from common.rails_context import RailsContext
 from services.data_service import DataService
+from services.diagram_maker import DiagramMaker
 from services.page_tools import get_header
 
 events_bp = Blueprint('events', __name__)
@@ -39,4 +40,15 @@ def events_compress():
 	if context.hasError():
 		return render_template('error.html', header=head, data=context)
 	return redirect(url_for('events.events_page'))
+
+@events_bp.route('/diagram')
+def events_diagram():
+	context = RailsContext()
+	settings = current_app.config['SETTINGS']
+	head = get_header(settings, 'Calendar')
+	service = DiagramMaker()
+	service.update_diagram(context, settings.calendar_path, settings.diagram_path)
+	if context.hasError():
+		return render_template('error.html', header=head, data=context)
+	return redirect(url_for('maps.map_page'))
 
